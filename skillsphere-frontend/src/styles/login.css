@@ -1,0 +1,147 @@
+/* Page-specific styles for Login page — exact copy from login.html <style> block */
+body.login-page {
+  background: radial-gradient(circle at 12% 15%, rgba(37, 99, 235, 0.10), transparent 40%),
+              radial-gradient(circle at 88% 85%, rgba(16, 185, 129, 0.10), transparent 42%),
+              var(--surface);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.form-label-nexus {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.btn-nexus-primary {
+  width: 100%;
+  font-size: var(--font-size-base);
+  padding: 0.75rem var(--spacing-md);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+.btn-nexus-primary:hover {
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+}
+.btn-nexus-primary:active { transform: translateY(0); }
+.btn-nexus-primary .spinner-border {
+  width: 1rem; height: 1rem;
+  border-width: 2px;
+  display: none;
+  margin-right: var(--spacing-sm);
+}
+.btn-nexus-primary.loading .spinner-border { display: inline-block; }
+.btn-nexus-primary.loading .btn-text::after { content: "Signing in..."; }
+.btn-nexus-primary.loading .btn-text { font-size: 0; }
+.btn-nexus-primary.loading .btn-text::after { font-size: var(--font-size-base); }
+
+.btn-nexus-outline {
+  width: 100%;
+  background: var(--white);
+  font-size: var(--font-size-base);
+  padding: 0.75rem var(--spacing-md);
+}
+
+.auth-footer-note {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: var(--spacing-xl);
+}
+
+.brand-img {
+  height: 58px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Toast Notification Styles */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.custom-toast {
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  animation: slideInRight 0.3s ease-out;
+  border-left: 4px solid var(--error);
+}
+
+.custom-toast.success { border-left-color: var(--primary); }
+.custom-toast.warning { border-left-color: var(--warning); }
+.custom-toast.leaving { animation: slideOutRight 0.3s ease-out forwards; }
+
+.toast-icon { font-size: 1.25rem; }
+.toast-icon.error { color: var(--error); }
+.toast-icon.success { color: var(--primary); }
+.toast-icon.warning { color: var(--warning); }
+
+.toast-message {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.toast-close:hover { opacity: 1; }
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Smooth field validation transitions */
+.input-nexus-group.has-error { animation: shake 0.5s ease-in-out; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.field-error {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: translateY(-5px);
+}
+.field-error.show { opacity: 1; transform: translateY(0); }
+
+/* Success animation */
+.auth-card.success-animation { animation: successPulse 0.6s ease-out; }
+
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
+  100% { transform: scale(1); }
+}

@@ -1,0 +1,15 @@
+export const ROUTES = {
+  HOME: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  DASHBOARD: '/dashboard',
+  STUDENT_DASHBOARD: '/student-dashboard',
+  STUDENT_COURSE_DETAILS: '/student-dashboard/courses/:courseId',
+  MENTOR_DASHBOARD: '/mentor-dashboard',
+  ADMIN_DASHBOARD: '/admin-dashboard',
+  ADMIN_ROLE_MANAGEMENT: '/admin/role-management',
+  PROFILE: '/profile',
+  MY_PROFILE: '/profile/my',
+  EDIT_PROFILE: '/profile/edit',
+  SETTINGS: '/profile/settings',
+};
