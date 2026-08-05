@@ -20,8 +20,6 @@ const TOOLS_REGISTRY = {
     { title: 'Resume & CV Builder', category: 'Career Tools', icon: 'bi-file-earmark-person-fill', href: '/student-dashboard#resume-builder', keywords: 'resume cv builder export pdf template alex student' },
     { title: 'Coding Practice & IDE', category: 'Practice', icon: 'bi-code-slash', href: '/student-dashboard#coding-practice', keywords: 'code coding ide editor practice compiler java python react' },
     { title: 'Internships & Job Portal', category: 'Careers', icon: 'bi-briefcase-fill', href: '/student-dashboard#internships', keywords: 'internships jobs career opportunities apply hiring' },
-    { title: 'Discussion Forum & Community', category: 'Community', icon: 'bi-chat-dots-fill', href: '/student-dashboard#forum', keywords: 'forum community discussion questions ask peers mentors' },
-    { title: 'Leaderboard & Gamification', category: 'XP & Badges', icon: 'bi-trophy-fill', href: '/student-dashboard#leaderboard', keywords: 'leaderboard xp ranks points badges streak rewards' },
     { title: 'Learning Analytics', category: 'Stats', icon: 'bi-graph-up-arrow', href: '/student-dashboard#analytics', keywords: 'analytics metrics progress stats hours completed' },
     { title: 'Quizzes & Practice Tests', category: 'Assessment', icon: 'bi-patch-question-fill', href: '/student-dashboard#quizzes', keywords: 'quiz test assessment exam questions score' },
     { title: 'Assignments & Projects', category: 'Work', icon: 'bi-card-checklist', href: '/student-dashboard#assignments', keywords: 'assignments projects tasks submit deadline homework' },

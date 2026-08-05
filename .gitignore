@@ -1,0 +1,8 @@
+skillsphere-frontend/node_modules/
+skillsphere-frontend/dist/
+skillsphere-frontend/.env
+skillsphere-backend/target/
+.idea/
+.vscode/
+*.log
+.DS_Store

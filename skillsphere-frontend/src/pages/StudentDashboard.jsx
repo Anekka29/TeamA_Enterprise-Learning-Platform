@@ -19,8 +19,6 @@ import SkillGap from '../components/Dashboard/Student/SkillGap';
 import ResumeBuilder from '../components/Dashboard/Student/ResumeBuilder';
 import CodingPractice from '../components/Dashboard/Student/CodingPractice';
 import Internships from '../components/Dashboard/Student/Internships';
-import DiscussionForum from '../components/Dashboard/Student/DiscussionForum';
-import Leaderboard from '../components/Dashboard/Student/Leaderboard';
 import Analytics from '../components/Dashboard/Student/Analytics';
 import QuizAttempt from '../components/Dashboard/Student/QuizAttempt';
 import Notifications from '../components/Dashboard/Student/Notifications';
@@ -409,10 +407,6 @@ export default function StudentDashboard() {
                     <div className="fw-bold text-white" style={{ fontSize: '1.5rem' }}>{xpPoints.toLocaleString()}</div>
                     <div style={{ fontSize: '0.7rem' }}>XP</div>
                   </div>
-                  <div className="text-center text-white-50">
-                    <div className="fw-bold text-white" style={{ fontSize: '1.5rem' }}>#{leaderboardRank !== '—' ? leaderboardRank : '?'}</div>
-                    <div style={{ fontSize: '0.7rem' }}>Rank</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -427,7 +421,6 @@ export default function StudentDashboard() {
                 { label: 'Streak', value: `${currentStreak}d`, icon: 'bi-fire', color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
                 { label: 'Achievements', value: achievementsCount, icon: 'bi-trophy-fill', color: '#8b5cf6', bg: 'rgba(139,92,246,0.08)' },
                 { label: 'Certificates', value: certificatesCount, icon: 'bi-award-fill', color: '#f59e0b', bg: 'rgba(245,158,11,0.08)' },
-                { label: 'Rank', value: leaderboardRank !== '—' ? `#${leaderboardRank}` : '—', icon: 'bi-bar-chart-fill', color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
               ].map(stat => (
                 <div key={stat.label} className="metric-card">
                   <div className="metric-icon" style={{ background: stat.bg }}>
@@ -811,7 +804,6 @@ export default function StudentDashboard() {
         {activeTab === '#resume-builder' && <ResumeBuilder profile={profile} />}
         {activeTab === '#coding-practice' && <CodingPractice onAwardXP={handleAwardXP} />}
         {activeTab === '#internships' && <Internships userEmail={studentEmail} onShowToast={showAlert} />}
-        {activeTab === '#discussion' && <DiscussionForum userEmail={studentEmail} />}
 
         {activeTab === '#progress' && (
           <Analytics
@@ -826,9 +818,6 @@ export default function StudentDashboard() {
           />
         )}
 
-        {activeTab === '#leaderboard' && (
-          <Leaderboard dashboard={dashboard} xpPoints={xpPoints} />
-        )}
 
         {/* ================================================================ */}
         {/* SESSIONS TAB */}

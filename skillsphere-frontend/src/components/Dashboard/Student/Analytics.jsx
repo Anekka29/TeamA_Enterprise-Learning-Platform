@@ -76,8 +76,10 @@ export default function Analytics({ dashboard, enrollments = [] }) {
     };
   });
 
-  // Enrolled courses from enrollments prop
-  const enrolledCourses = enrollments.filter(e => e.progress !== undefined);
+  // Enrolled courses from enrollments prop or backend dashboard data
+  const enrolledCourses = (enrollments && enrollments.length > 0)
+    ? enrollments.filter(e => e.progress !== undefined || e.title || e.courseTitle)
+    : (data?.enrolledCourses || []);
 
   const metrics = [
     { label: 'Active Courses', value: activeCourses, icon: 'bi-book-fill', color: '#10b981', bg: '#f0fdf4' },
@@ -86,7 +88,6 @@ export default function Analytics({ dashboard, enrollments = [] }) {
     { label: 'XP Points', value: `${xpPoints} XP`, icon: 'bi-lightning-fill', color: '#f59e0b', bg: '#fffbeb' },
     { label: 'Day Streak', value: `${streak}d`, icon: 'bi-fire', color: '#ef4444', bg: '#fef2f2' },
     { label: 'Achievements', value: achievements, icon: 'bi-trophy-fill', color: '#8b5cf6', bg: '#f5f3ff' },
-    { label: 'Leaderboard', value: leaderboardRank === '-' ? '-' : `#${leaderboardRank}`, icon: 'bi-bar-chart-fill', color: '#10b981', bg: '#f0fdf4' },
     { label: 'Quizzes Due', value: quizPending, icon: 'bi-question-circle-fill', color: '#f59e0b', bg: '#fffbeb' },
   ];
 
@@ -280,7 +281,7 @@ export default function Analytics({ dashboard, enrollments = [] }) {
                 {xpPoints.toLocaleString()}
               </div>
               <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-                Rank #{leaderboardRank !== '-' ? leaderboardRank : '—'} on Leaderboard
+                Keep completing courses & quizzes to earn more XP!
               </div>
             </div>
           </div>

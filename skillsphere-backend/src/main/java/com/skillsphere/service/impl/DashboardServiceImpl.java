@@ -73,7 +73,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .collect(Collectors.toList());
 
         int activeCourses = (int) enrollments.stream()
-                .filter(enrollment -> enrollment.getProgress() != null && enrollment.getProgress() > 0 && enrollment.getProgress() < 100)
+                .filter(enrollment -> enrollment.getProgress() == null || enrollment.getProgress() < 100)
                 .count();
 
         int completedCourses = (int) enrollments.stream()
@@ -87,6 +87,37 @@ public class DashboardServiceImpl implements DashboardService {
         // XP is derived from persisted lesson completions and completed courses.
         int xpPoints = (int) (lessonCompletionCount * 10L + completedCourses * 100L);
         int currentStreak = calculateCurrentStreak(recentCompletions);
+
+        List<DashboardAchievementItem> achievementsList = buildStudentAchievements(enrollments, recentCompletions, lessonCompletionCount, currentStreak);
+        int achievementsCount = achievementsList.size();
+        int certificatesCount = completedCourses;
+
+        int monthlyProgressPercentage = 0;
+        int weeklyProgressPercentage = 0;
+        if (!enrollments.isEmpty()) {
+            double avgProgress = enrollments.stream()
+                    .mapToInt(e -> e.getProgress() != null ? e.getProgress() : 0)
+                    .average()
+                    .orElse(0.0);
+            monthlyProgressPercentage = (int) Math.round(avgProgress);
+            weeklyProgressPercentage = (int) Math.round(avgProgress);
+        }
+
+        int totalQuizzes = 0;
+        for (Enrollment e : enrollments) {
+            totalQuizzes += quizRepository.findByCourseAndPublishedTrue(e.getCourse()).size();
+        }
+        long completedQuizzes = quizResultRepository.countByStudentId(student.getId());
+        int quizzesPendingCount = Math.max(0, totalQuizzes - (int) completedQuizzes);
+
+        int totalAssignments = 0;
+        for (Enrollment e : enrollments) {
+            if (e.getCourse().getAssignments() != null) {
+                totalAssignments += e.getCourse().getAssignments().size();
+            }
+        }
+        long submittedAssignments = assignmentSubmissionRepository.findByStudentId(student.getId()).size();
+        int assignmentsPendingCount = Math.max(0, totalAssignments - (int) submittedAssignments);
 
         DashboardCourseItem continueLearningCourse = enrollments.stream()
                 .filter(enrollment -> enrollment.getProgress() != null && enrollment.getProgress() < 100)
@@ -118,10 +149,16 @@ public class DashboardServiceImpl implements DashboardService {
                 .totalStudyHours(totalStudyHours)
                 .xpPoints(xpPoints)
                 .currentStreak(currentStreak)
+                .achievementsCount(achievementsCount)
+                .certificatesCount(certificatesCount)
+                .weeklyProgressPercentage(weeklyProgressPercentage)
+                .monthlyProgressPercentage(monthlyProgressPercentage)
+                .quizzesPendingCount(quizzesPendingCount)
+                .assignmentsPendingCount(assignmentsPendingCount)
                 .continueLearningCourse(continueLearningCourse)
                 .enrolledCourses(enrolledCourses)
                 .recommendedCourses(recommendedCourses)
-                .recentAchievements(buildStudentAchievements(enrollments, recentCompletions, lessonCompletionCount, currentStreak))
+                .recentAchievements(achievementsList)
                 .upcomingSessions(List.of())
                 .notifications(notifications.stream().limit(5).map(this::mapNotification).collect(Collectors.toList()))
                 .unreadNotificationCount(unreadCount)
