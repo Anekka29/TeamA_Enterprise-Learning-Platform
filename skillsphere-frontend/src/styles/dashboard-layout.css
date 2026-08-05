@@ -656,3 +656,51 @@
     height: 36px;
   }
 }
+
+/* ============== HIGH CONTRAST FORM LABELS ============== */
+label.form-label,
+.form-label {
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 6px !important;
+  display: block !important;
+}
+
+[data-theme="dark"] label.form-label,
+[data-theme="dark"] .form-label,
+body.dark-mode label.form-label,
+body.dark-mode .form-label {
+  color: #F0FDF4 !important;
+}
+
+/* ============== DASHBOARD DARK MODE OVERRIDES ============== */
+[data-theme="dark"] .dashboard-layout-wrapper,
+body.dark-mode .dashboard-layout-wrapper {
+  background: radial-gradient(circle at 12% 15%, rgba(16, 185, 129, 0.12), transparent 40%),
+              radial-gradient(circle at 88% 85%, rgba(16, 185, 129, 0.08), transparent 42%),
+              #091915 !important;
+  color: #F0FDF4 !important;
+}
+
+[data-theme="dark"] .sidebar,
+body.dark-mode .sidebar {
+  background: rgba(17, 39, 34, 0.95) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .sidebar-link,
+body.dark-mode .sidebar-link {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .sidebar-link:hover,
+[data-theme="dark"] .sidebar-link.active,
+body.dark-mode .sidebar-link:hover,
+body.dark-mode .sidebar-link.active {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34D399 !important;
+}
+
+

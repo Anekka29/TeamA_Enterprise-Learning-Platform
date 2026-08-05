@@ -1,0 +1,11 @@
+package com.skillsphere.enums;
+
+public enum NotificationType {
+    COURSE_APPROVED,
+    COURSE_REJECTED,
+    STUDENT_ENROLLED,
+    ASSIGNMENT_PUBLISHED,
+    ASSIGNMENT_GRADED,
+    CERTIFICATE_GENERATED,
+    ANNOUNCEMENT
+}

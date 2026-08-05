@@ -2,7 +2,7 @@
 body.register-page {
   background: radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.15), transparent 40%),
               radial-gradient(circle at 85% 80%, rgba(52, 211, 153, 0.15), transparent 45%),
-              linear-gradient(180deg, #F0FDF4 0%, #ECFDF5 100%);
+              var(--surface);
   -webkit-font-smoothing: antialiased;
   display: flex;
   align-items: center;
