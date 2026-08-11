@@ -1,8 +1,12 @@
 skillsphere-frontend/node_modules/
 skillsphere-frontend/dist/
 skillsphere-frontend/.env
+skillsphere-frontend/.env.local
 skillsphere-backend/target/
+skillsphere-backend/uploads/
+uploads/
 .idea/
 .vscode/
 *.log
+mvn-*.log
 .DS_Store

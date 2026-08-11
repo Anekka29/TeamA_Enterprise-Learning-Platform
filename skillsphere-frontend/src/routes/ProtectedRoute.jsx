@@ -1,10 +1,12 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { ROUTES } from '../constants/routes';
+import DashboardLayout from '../layouts/DashboardLayout';
 
 /**
  * Protects routes that require authentication.
  * Optionally checks if the user has a specific role.
+ * Automatically wraps all protected pages in the shared DashboardLayout.
  */
 export default function ProtectedRoute({ children, requiredRole }) {
   const { isAuthenticated, user, loading } = useAuth();
@@ -12,7 +14,8 @@ export default function ProtectedRoute({ children, requiredRole }) {
   if (loading) return null; // Wait for auth state to initialise
 
   if (!isAuthenticated) {
-    return <Navigate to={ROUTES.LOGIN} replace />;
+    const currentPath = window.location.pathname + window.location.search;
+    return <Navigate to={`${ROUTES.LOGIN}?redirect=${encodeURIComponent(currentPath)}`} replace />;
   }
 
   if (requiredRole && user?.role !== requiredRole) {
@@ -22,5 +25,5 @@ export default function ProtectedRoute({ children, requiredRole }) {
     return <Navigate to={ROUTES.STUDENT_DASHBOARD} replace />;
   }
 
-  return children;
+  return <DashboardLayout>{children}</DashboardLayout>;
 }

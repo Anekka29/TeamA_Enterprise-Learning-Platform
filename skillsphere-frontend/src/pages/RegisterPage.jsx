@@ -11,8 +11,7 @@ import { ROUTES } from '../constants/routes';
 import '../styles/register.css';
 
 const INITIAL_ERRORS = {
-  fullName: '', email: '', username: '', password: '', confirmPassword: '',
-  college: '', department: '', year: '', phoneNumber: '', terms: '',
+  fullName: '', email: '', password: '', confirmPassword: '', terms: '',
 };
 const INITIAL_HAS_ERROR = Object.fromEntries(Object.keys(INITIAL_ERRORS).map(k => [k, false]));
 
@@ -23,9 +22,9 @@ export default function RegisterPage() {
   const cardRef = useRef(null);
 
   const [fields, setFields] = useState({
-    fullName: '', email: '', username: '', password: '', confirmPassword: '',
-    college: '', department: '', year: '', phoneNumber: '',
+    fullName: '', email: '', password: '', confirmPassword: '',
   });
+  const [role] = useState('STUDENT');
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
@@ -80,12 +79,6 @@ export default function RegisterPage() {
     if (!isValidEmail(v)) { setError('email', 'Enter a valid email address.'); return false; }
     clearError('email'); setSuccess('email'); return true;
   };
-  const validateUsername = (v = fields.username) => {
-    if (!v.trim()) { setError('username', 'Username is required.'); return false; }
-    if (v.trim().length < 4) { setError('username', 'Username must be at least 4 characters.'); return false; }
-    if (!isValidUsername(v)) { setError('username', 'Only letters, numbers, and underscores allowed.'); return false; }
-    clearError('username'); setSuccess('username'); return true;
-  };
   const validatePassword = (v = fields.password) => {
     if (!v) { setError('password', 'Password is required.'); setPwdStrength(''); return false; }
     if (v.length < 8) { setError('password', 'Password must be at least 8 characters.'); setPwdStrength(getPasswordStrength(v)); return false; }
@@ -95,22 +88,6 @@ export default function RegisterPage() {
     if (!v) { setError('confirmPassword', 'Please confirm your password.'); setConfirmSuccess(false); return false; }
     if (v !== fields.password) { setError('confirmPassword', 'Passwords do not match.'); setConfirmSuccess(false); return false; }
     clearError('confirmPassword'); setSuccess('confirmPassword'); setConfirmSuccess(true); return true;
-  };
-  const validateCollege = (v = fields.college) => {
-    if (!v.trim()) { setError('college', 'College name is required.'); return false; }
-    clearError('college'); setSuccess('college'); return true;
-  };
-  const validateDepartment = (v = fields.department) => {
-    if (!v) { setError('department', 'Please select a department.'); return false; }
-    clearError('department'); setSuccess('department'); return true;
-  };
-  const validateYear = (v = fields.year) => {
-    if (!v) { setError('year', 'Please select your year.'); return false; }
-    clearError('year'); setSuccess('year'); return true;
-  };
-  const validatePhone = (v = fields.phoneNumber) => {
-    if (v.trim() !== '' && !isValidPhone(v)) { setError('phoneNumber', 'Please enter a valid phone number.'); return false; }
-    clearError('phoneNumber'); if (v.trim()) setSuccess('phoneNumber'); return true;
   };
   const validateTerms = (checked = acceptTerms) => {
     if (!checked) { setError('terms', 'You must accept the Terms & Conditions to continue.'); return false; }
@@ -122,9 +99,8 @@ export default function RegisterPage() {
     setAuthAlert({ show: false, text: '' });
 
     const validations = [
-      validateFullName(), validateEmail(), validateUsername(), validatePassword(),
-      validateConfirmPassword(), validateCollege(), validateDepartment(), validateYear(),
-      validatePhone(), validateTerms(),
+      validateFullName(), validateEmail(), validatePassword(),
+      validateConfirmPassword(), validateTerms(),
     ];
 
     if (!validations.every(Boolean)) {
@@ -136,14 +112,10 @@ export default function RegisterPage() {
     try {
       const payload = {
         fullName: fields.fullName.trim(),
-        username: fields.username.trim(),
         email: fields.email.trim(),
         password: fields.password,
-        college: fields.college.trim(),
-        department: fields.department,
-        year: fields.year,
+        role: role,
       };
-      if (fields.phoneNumber.trim()) payload.phoneNumber = fields.phoneNumber.trim();
 
       const response = await AuthService.register(payload);
       const data = response.data;
@@ -151,10 +123,17 @@ export default function RegisterPage() {
       cardRef.current?.classList.add('success-animation');
       showToast('Registration successful!', 'success');
 
-      login(data.token, { email: data.email, role: data.role });
+      const finalRole = data.role || role || 'STUDENT';
+      login(data.token, { email: data.email, role: finalRole, name: fields.fullName });
+
+      const dashboardMap = {
+        ADMIN: ROUTES.ADMIN_DASHBOARD,
+        MENTOR: ROUTES.MENTOR_DASHBOARD,
+        STUDENT: ROUTES.STUDENT_DASHBOARD,
+      };
 
       setTimeout(() => {
-        navigate(ROUTES.STUDENT_DASHBOARD, { replace: true });
+        navigate(dashboardMap[finalRole] || ROUTES.STUDENT_DASHBOARD, { replace: true });
       }, 1000);
     } catch (error) {
       setLoading(false);
@@ -183,7 +162,7 @@ export default function RegisterPage() {
             <a href="#" className="brand-logo">
               <img src={logoImg} className="brand-img" alt="Logo" />
             </a>
-            <h1>Create your student account</h1>
+            <h1>Create your account</h1>
             <p>Start your personalized career journey in a few minutes.</p>
           </div>
 
@@ -197,7 +176,7 @@ export default function RegisterPage() {
           </div>
 
           <form id="registerForm" noValidate onSubmit={handleSubmit}>
-            <p className="section-tag">Personal Details</p>
+            <p className="section-tag">Account Details</p>
 
             {/* Full Name */}
             <div className={`input-nexus-group${hasError.fullName ? ' has-error' : ''}${hasSuccess.fullName ? ' has-success' : ''}`} id="fullNameGroup">
@@ -210,31 +189,15 @@ export default function RegisterPage() {
               <div className={`field-error${hasError.fullName ? ' show' : ''}`}><i className="bi bi-exclamation-circle"></i><span> {errors.fullName}</span></div>
             </div>
 
-            <div className="row">
-              {/* Email */}
-              <div className="col-md-6">
-                <div className={`input-nexus-group${hasError.email ? ' has-error' : ''}${hasSuccess.email ? ' has-success' : ''}`} id="emailGroup">
-                  <label className="form-label-nexus" htmlFor="email">Email <span className="req">*</span></label>
-                  <div className="position-relative">
-                    <input type="email" id="email" className="form-control-nexus" placeholder="you@college.edu" autoComplete="email"
-                      value={fields.email} onChange={e => { set('email', e.target.value); validateEmail(e.target.value); }} />
-                    <i className="bi bi-envelope input-icon"></i>
-                  </div>
-                  <div className={`field-error${hasError.email ? ' show' : ''}`}><i className="bi bi-exclamation-circle"></i><span> {errors.email}</span></div>
-                </div>
+            {/* Email */}
+            <div className={`input-nexus-group${hasError.email ? ' has-error' : ''}${hasSuccess.email ? ' has-success' : ''}`} id="emailGroup">
+              <label className="form-label-nexus" htmlFor="email">Email <span className="req">*</span></label>
+              <div className="position-relative">
+                <input type="email" id="email" className="form-control-nexus" placeholder="you@example.com" autoComplete="email"
+                  value={fields.email} onChange={e => { set('email', e.target.value); validateEmail(e.target.value); }} />
+                <i className="bi bi-envelope input-icon"></i>
               </div>
-              {/* Username */}
-              <div className="col-md-6">
-                <div className={`input-nexus-group${hasError.username ? ' has-error' : ''}${hasSuccess.username ? ' has-success' : ''}`} id="usernameGroup">
-                  <label className="form-label-nexus" htmlFor="username">Username <span className="req">*</span></label>
-                  <div className="position-relative">
-                    <input type="text" id="username" className="form-control-nexus" placeholder="Choose a username" autoComplete="username"
-                      value={fields.username} onChange={e => { set('username', e.target.value); validateUsername(e.target.value); }} />
-                    <i className="bi bi-at input-icon"></i>
-                  </div>
-                  <div className={`field-error${hasError.username ? ' show' : ''}`}><i className="bi bi-exclamation-circle"></i><span> {errors.username}</span></div>
-                </div>
-              </div>
+              <div className={`field-error${hasError.email ? ' show' : ''}`}><i className="bi bi-exclamation-circle"></i><span> {errors.email}</span></div>
             </div>
 
             <div className="row">
@@ -272,71 +235,6 @@ export default function RegisterPage() {
                   <div className={`field-success${confirmSuccess ? ' show' : ''}`}><i className="bi bi-check-circle"></i><span> Passwords match.</span></div>
                 </div>
               </div>
-            </div>
-
-            <p className="section-tag">Academic Details</p>
-
-            {/* College */}
-            <div className={`input-nexus-group${hasError.college ? ' has-error' : ''}${hasSuccess.college ? ' has-success' : ''}`} id="collegeGroup">
-              <label className="form-label-nexus" htmlFor="college">College / University <span className="req">*</span></label>
-              <div className="position-relative">
-                <input type="text" id="college" className="form-control-nexus" placeholder="e.g. National Institute of Technology" autoComplete="organization"
-                  value={fields.college} onChange={e => { set('college', e.target.value); validateCollege(e.target.value); }} />
-                <i className="bi bi-building input-icon"></i>
-              </div>
-              <div className={`field-error${hasError.college ? ' show' : ''}`}><i className="bi bi-exclamation-circle"></i><span> {errors.college}</span></div>
-            </div>
-
-            <div className="row">
-              {/* Department */}
-              <div className="col-md-6">
-                <div className={`input-nexus-group${hasError.department ? ' has-error' : ''}${hasSuccess.department ? ' has-success' : ''}`} id="departmentGroup">
-                  <label className="form-label-nexus" htmlFor="department">Department <span className="req">*</span></label>
-                  <div className="position-relative">
-                    <select id="department" className="form-select-nexus" value={fields.department} onChange={e => { set('department', e.target.value); validateDepartment(e.target.value); }}>
-                      <option value="" disabled>Select department</option>
-                      <option>Computer Science</option>
-                      <option>Information Technology</option>
-                      <option>Electronics &amp; Communication</option>
-                      <option>Mechanical Engineering</option>
-                      <option>Civil Engineering</option>
-                      <option>Business Administration</option>
-                      <option>Other</option>
-                    </select>
-                    <i className="bi bi-mortarboard input-icon"></i>
-                  </div>
-                  <div className={`field-error${hasError.department ? ' show' : ''}`}><i className="bi bi-exclamation-circle"></i><span> {errors.department}</span></div>
-                </div>
-              </div>
-              {/* Year */}
-              <div className="col-md-6">
-                <div className={`input-nexus-group${hasError.year ? ' has-error' : ''}${hasSuccess.year ? ' has-success' : ''}`} id="yearGroup">
-                  <label className="form-label-nexus" htmlFor="year">Year <span className="req">*</span></label>
-                  <div className="position-relative">
-                    <select id="year" className="form-select-nexus" value={fields.year} onChange={e => { set('year', e.target.value); validateYear(e.target.value); }}>
-                      <option value="" disabled>Select year</option>
-                      <option>1st Year</option>
-                      <option>2nd Year</option>
-                      <option>3rd Year</option>
-                      <option>4th Year</option>
-                      <option>Final Year</option>
-                    </select>
-                    <i className="bi bi-calendar3 input-icon"></i>
-                  </div>
-                  <div className={`field-error${hasError.year ? ' show' : ''}`}><i className="bi bi-exclamation-circle"></i><span> {errors.year}</span></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Phone */}
-            <div className={`input-nexus-group${hasError.phoneNumber ? ' has-error' : ''}${hasSuccess.phoneNumber ? ' has-success' : ''}`} id="phoneNumberGroup">
-              <label className="form-label-nexus" htmlFor="phoneNumber">Phone Number</label>
-              <div className="position-relative">
-                <input type="tel" id="phoneNumber" className="form-control-nexus" placeholder="e.g. +91 98765 43210" autoComplete="tel"
-                  value={fields.phoneNumber} onChange={e => { set('phoneNumber', e.target.value); validatePhone(e.target.value); }} />
-                <i className="bi bi-telephone input-icon"></i>
-              </div>
-              <div className={`field-error${hasError.phoneNumber ? ' show' : ''}`}><i className="bi bi-exclamation-circle"></i><span> {errors.phoneNumber}</span></div>
             </div>
 
             {/* Terms */}
