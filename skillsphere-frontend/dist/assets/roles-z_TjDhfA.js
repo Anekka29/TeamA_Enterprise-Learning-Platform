@@ -1,1 +1,0 @@
-const N={ADMIN:"ADMIN",MENTOR:"MENTOR",STUDENT:"STUDENT"};export{N as R};

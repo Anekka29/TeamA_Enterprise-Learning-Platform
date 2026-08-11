@@ -18,23 +18,16 @@ export default function AdminRoleManagement() {
   const [roleFilter, setRoleFilter] = useState('ALL');
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
   const [processingUsers, setProcessingUsers] = useState(new Set());
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
-  const [bulkRole, setBulkRole] = useState('');
-  const [bulkUpdating, setBulkUpdating] = useState(false);
 
   const [stats, setStats] = useState({ total: 0, students: 0, mentors: 0, admins: 0 });
 
-  const getErrorMessage = (err, fallback) =>
-    err?.message || err?.response?.data?.message || err?.response?.message || fallback;
-
   const fetchUsers = useCallback(() => {
     setLoading(true);
-    AdminService.getAllUsersDetails()
+    AdminService.getAllUsers()
       .then(res => {
         const data = res.data;
         setUsers(data);
         applyFilters(data, searchQuery, roleFilter);
-        setSelectedUserIds((prev) => prev.filter((id) => data.some((user) => user.id === id)));
         // Compute stats
         setStats({
           total: data.length,
@@ -85,8 +78,8 @@ export default function AdminRoleManagement() {
       await AdminService.updateUserRole(userId, newRole);
       showAlert('success', `User role updated to ${newRole} successfully.`);
       fetchUsers();
-    } catch (err) {
-      showAlert('error', getErrorMessage(err, 'Failed to update role. Please try again.'));
+    } catch {
+      showAlert('error', 'Failed to update role. Please try again.');
     } finally {
       setProcessingUsers(prev => {
         const next = new Set(prev);
@@ -118,62 +111,6 @@ export default function AdminRoleManagement() {
       return parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0][0].toUpperCase();
     }
     return (user.email || 'U').charAt(0).toUpperCase();
-  };
-
-  const allFilteredSelected = filteredUsers.length > 0 && filteredUsers.every((user) => selectedUserIds.includes(user.id));
-
-  const handleToggleSelect = (userId) => {
-    setSelectedUserIds((prev) =>
-      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
-    );
-  };
-
-  const handleToggleSelectAll = () => {
-    if (allFilteredSelected) {
-      setSelectedUserIds((prev) => prev.filter((id) => !filteredUsers.some((user) => user.id === id)));
-      return;
-    }
-
-    const filteredIds = filteredUsers.map((user) => user.id);
-    setSelectedUserIds((prev) => Array.from(new Set([...prev, ...filteredIds])));
-  };
-
-  const handleBulkRoleUpdate = async () => {
-    if (!bulkRole) {
-      showAlert('error', 'Select a role before applying the bulk update.');
-      return;
-    }
-
-    const targetUsers = filteredUsers.filter(
-      (user) => selectedUserIds.includes(user.id) && user.role !== bulkRole
-    );
-
-    if (targetUsers.length === 0) {
-      showAlert('error', 'Select at least one user with a different role.');
-      return;
-    }
-
-    setBulkUpdating(true);
-
-    const results = await Promise.allSettled(
-      targetUsers.map((user) => AdminService.updateUserRole(user.id, bulkRole))
-    );
-
-    const successCount = results.filter((result) => result.status === 'fulfilled').length;
-    const failure = results.find((result) => result.status === 'rejected');
-
-    if (successCount > 0) {
-      showAlert('success', `${successCount} user role update${successCount > 1 ? 's' : ''} applied successfully.`);
-    }
-
-    if (failure) {
-      showAlert('error', getErrorMessage(failure.reason, 'Some role updates failed.'));
-    }
-
-    setBulkUpdating(false);
-    setBulkRole('');
-    setSelectedUserIds([]);
-    fetchUsers();
   };
 
   return (
@@ -244,33 +181,6 @@ export default function AdminRoleManagement() {
             <option value="ADMIN">Admin</option>
           </select>
         </div>
-        <div className="search-filter-bar">
-          <div className="search-box">
-            <i className="bi bi-check2-square"></i>
-            <input
-              type="text"
-              value={`${selectedUserIds.length} selected`}
-              readOnly
-            />
-          </div>
-          <select
-            className="filter-select"
-            value={bulkRole}
-            onChange={e => setBulkRole(e.target.value)}
-          >
-            <option value="">Bulk role</option>
-            <option value="STUDENT">Student</option>
-            <option value="MENTOR">Mentor</option>
-            <option value="ADMIN">Admin</option>
-          </select>
-          <button
-            className="logout-btn"
-            onClick={handleBulkRoleUpdate}
-            disabled={bulkUpdating || selectedUserIds.length === 0 || !bulkRole}
-          >
-            {bulkUpdating ? 'Applying...' : 'Apply Bulk Update'}
-          </button>
-        </div>
 
         {/* Users Table */}
         <div className="users-table-card">
@@ -302,14 +212,6 @@ export default function AdminRoleManagement() {
               <table className="admin-table" id="usersTable">
                 <thead>
                   <tr>
-                    <th>
-                      <input
-                        type="checkbox"
-                        checked={allFilteredSelected}
-                        onChange={handleToggleSelectAll}
-                        aria-label="Select all users"
-                      />
-                    </th>
                     <th>User</th>
                     <th>Username</th>
                     <th>Current Role</th>
@@ -319,14 +221,6 @@ export default function AdminRoleManagement() {
                 <tbody id="usersTableBody">
                   {filteredUsers.map(u => (
                     <tr key={u.id}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={selectedUserIds.includes(u.id)}
-                          onChange={() => handleToggleSelect(u.id)}
-                          aria-label={`Select ${u.email}`}
-                        />
-                      </td>
                       <td>
                         <div className="user-info">
                           <div className="user-avatar">{getInitials(u)}</div>

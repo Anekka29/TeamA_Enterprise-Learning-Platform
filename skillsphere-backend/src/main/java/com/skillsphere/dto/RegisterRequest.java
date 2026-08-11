@@ -1,6 +1,5 @@
 package com.skillsphere.dto;
 
-import com.skillsphere.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,6 +13,10 @@ public class RegisterRequest {
     @NotBlank(message = "Full name is required")
     private String fullName;
 
+    @NotBlank(message = "Username is required")
+    @Size(min = 4, message = "Username must be at least 4 characters")
+    private String username;
+
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
@@ -22,5 +25,14 @@ public class RegisterRequest {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
-    private Role role;
+    @NotBlank(message = "College is required")
+    private String college;
+
+    @NotBlank(message = "Department is required")
+    private String department;
+
+    @NotBlank(message = "Year is required")
+    private String year;
+
+    private String phoneNumber;
 }

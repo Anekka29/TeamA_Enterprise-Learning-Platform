@@ -44,7 +44,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             
             log.info("Found user in DB: {}", user);
             
-            String token = jwtService.generateToken(user);
+            String token = jwtService.generateToken(user.getEmail());
             log.info("Generated JWT token (first 20 chars): {}", token.substring(0, Math.min(20, token.length())));
             
             String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/oauth2/redirect")

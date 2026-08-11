@@ -5,11 +5,9 @@ import com.skillsphere.dto.LoginResponse;
 import com.skillsphere.dto.RegisterRequest;
 import com.skillsphere.entity.User;
 import com.skillsphere.enums.Role;
-import com.skillsphere.enums.Provider;
 import com.skillsphere.exception.EmailAlreadyExistsException;
 import com.skillsphere.exception.InvalidCredentialsException;
 import com.skillsphere.exception.UserNotFoundException;
-import com.skillsphere.exception.RoleMismatchException;
 import com.skillsphere.repository.UserRepository;
 import com.skillsphere.repository.PasswordResetTokenRepository;
 import com.skillsphere.security.JwtService;
@@ -49,25 +47,28 @@ public class AuthServiceImpl implements AuthService {
             throw new EmailAlreadyExistsException("Email is already registered: " + request.getEmail());
         }
 
-        // Generate unique username from email
-        String username = generateUniqueUsername(request.getEmail());
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new EmailAlreadyExistsException("Username is already taken: " + request.getUsername());
+        }
 
-        // Assign selected role or default to ROLE_STUDENT
-        Role roleToAssign = request.getRole() != null ? request.getRole() : Role.STUDENT;
+        // Auto-assign ROLE_STUDENT to all new registrations
+        // This prevents users from manipulating their role during registration
+        // Users can only be promoted to MENTOR or ADMIN by existing admins
         User user = User.builder()
                 .fullName(request.getFullName())
-                .username(username)
+                .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(roleToAssign)
-                .provider(Provider.LOCAL)
-                .enabled(true)
-                .emailVerified(false)
+                .college(request.getCollege())
+                .department(request.getDepartment())
+                .year(request.getYear())
+                .phoneNumber(request.getPhoneNumber())
+                .role(Role.STUDENT)
                 .build();
 
         userRepository.save(user);
 
-        String token = jwtService.generateToken(user);
+        String token = jwtService.generateToken(user.getEmail());
 
         return LoginResponse.builder()
                 .token(token)
@@ -75,19 +76,6 @@ public class AuthServiceImpl implements AuthService {
                 .role(user.getRole().name())
                 .message("Registration successful")
                 .build();
-    }
-
-    private String generateUniqueUsername(String email) {
-        String baseUsername = email.split("@")[0];
-        String username = baseUsername;
-        int counter = 1;
-        
-        while (userRepository.existsByUsername(username)) {
-            username = baseUsername + counter;
-            counter++;
-        }
-        
-        return username;
     }
 
     @Override
@@ -105,12 +93,7 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException("Incorrect password");
         }
 
-        // Validate selected role matches actual user role
-        if (request.getSelectedRole() != user.getRole()) {
-            throw new RoleMismatchException("The selected login role does not match this account.");
-        }
-
-        String token = jwtService.generateToken(user, request.isRememberMe());
+        String token = jwtService.generateToken(user.getEmail());
 
         return LoginResponse.builder()
                 .token(token)
@@ -133,13 +116,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void forgotPassword(String email) {
-        log.info("=== Forgot Password request received for email ===");
+        log.info("=== Forgot Password request received for email: {} ===", email);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("User not found for email");
+                    log.error("User not found for email: {}", email);
                     return new UserNotFoundException("No account found with this email");
                 });
-        log.info("User found with ID: {}", user.getId());
+        log.info("User found with email: {} and ID: {}", email, user.getId());
 
         // Invalidate old tokens
         log.info("Invalidating old tokens for user ID: {}", user.getId());
@@ -153,6 +136,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Create new token
         String unhashedToken = UUID.randomUUID().toString();
+        log.info("Generated new reset token (unhashed): {}", unhashedToken);
         String hashedToken = hashToken(unhashedToken);
 
         PasswordResetToken resetToken = PasswordResetToken.builder()
@@ -167,11 +151,12 @@ public class AuthServiceImpl implements AuthService {
 
         // Send email
         String resetLink = "http://localhost:5173/reset-password?token=" + unhashedToken;
+        log.info("Preparing to send password reset email to: {} with reset link: {}", user.getEmail(), resetLink);
         try {
             emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
-            log.info("=== Password reset email sent successfully ===");
+            log.info("=== Password reset email sent successfully to: {} ===", user.getEmail());
         } catch (Exception e) {
-            log.error("Error sending password reset email", e);
+            log.error("Error sending password reset email to: {}", user.getEmail(), e);
             throw new RuntimeException("Failed to send password reset email", e);
         }
     }
@@ -179,11 +164,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean validateResetToken(String token) {
         log.info("=== validateResetToken called ===");
+        log.info("Received token from frontend: {}", token);
         String hashedToken = hashToken(token);
+        log.info("Hashed token to compare: {}", hashedToken);
         Optional<PasswordResetToken> tokenOpt = tokenRepository.findByHashedToken(hashedToken);
         
         if (tokenOpt.isPresent()) {
             PasswordResetToken resetToken = tokenOpt.get();
+            log.info("Found token in DB. Used: {}, Expiry: {}, Now: {}", resetToken.isUsed(), resetToken.getExpiryTime(), LocalDateTime.now());
             if (!resetToken.isUsed() && resetToken.getExpiryTime().isAfter(LocalDateTime.now())) {
                 log.info("Token is VALID");
                 return true;
@@ -199,6 +187,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void resetPassword(String token, String newPassword) {
         log.info("=== resetPassword called ===");
+        log.info("Received token: {}", token);
         String hashedToken = hashToken(token);
         PasswordResetToken resetToken = tokenRepository.findByHashedToken(hashedToken)
                 .orElseThrow(() -> {

@@ -27,13 +27,13 @@ apiClient.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
     const url = error.config?.url || '';
-    const isPublicEndpoint = 
-      url.includes('/api/auth/') || 
-      url.includes('/api/courses') || 
-      url.includes('/api/public/');
+    const isAuthEndpoint = 
+      url.includes('/api/auth/forgot-password') || 
+      url.includes('/api/auth/validate-reset-token') || 
+      url.includes('/api/auth/reset-password');
     
-    // Don't redirect on login request or public API endpoints
-    if ((status === 401 || status === 403) && !isPublicEndpoint) {
+    // Don't redirect on login request or password reset auth endpoints
+    if ((status === 401 || status === 403) && !isAuthEndpoint) {
       AuthUtils.clearAuth();
       window.location.href = '/login';
     }

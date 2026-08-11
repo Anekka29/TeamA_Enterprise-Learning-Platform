@@ -13,7 +13,7 @@ import '../styles/login.css';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login, isAuthenticated, user } = useAuth();
+  const { login } = useAuth();
   const { toasts, showToast, removeToast } = useToast();
 
   const [email, setEmail] = useState('');
@@ -21,7 +21,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState('STUDENT');
 
   // Field error states as per user request
   const [errors, setErrors] = useState({ email: '', password: '' });
@@ -30,40 +29,6 @@ export default function LoginPage() {
 
   // Card success animation
   const cardRef = useRef(null);
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      const searchParams = new URLSearchParams(window.location.search);
-      const redirectPath = searchParams.get('redirect');
-      const intendedCourse = localStorage.getItem('intendedCourse');
-      if (intendedCourse) {
-        navigate(`/student-dashboard/courses/${intendedCourse}`, { replace: true });
-      } else if (redirectPath) {
-        navigate(redirectPath, { replace: true });
-      } else {
-        const dashboardMap = {
-          ADMIN: ROUTES.ADMIN_DASHBOARD,
-          MENTOR: ROUTES.MENTOR_DASHBOARD,
-          STUDENT: ROUTES.STUDENT_DASHBOARD,
-        };
-        navigate(dashboardMap[user.role] || ROUTES.STUDENT_DASHBOARD, { replace: true });
-      }
-    }
-  }, [isAuthenticated, user, navigate]);
-
-  // Check for saved Remember Me credentials on mount
-  useEffect(() => {
-    const savedEmail = localStorage.getItem('rememberedEmail');
-    const savedRole = localStorage.getItem('rememberedRole');
-    if (savedEmail) {
-      setEmail(savedEmail);
-      setRememberMe(true);
-    }
-    if (savedRole) {
-      setRole(savedRole);
-    }
-  }, []);
 
   // Check for session message on mount
   useEffect(() => {
@@ -117,45 +82,23 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const response = await AuthService.login(email.trim(), password, role, rememberMe);
+      const response = await AuthService.login(email.trim(), password);
       const data = response.data;
 
-      // Handle Remember Me persistence
-      if (rememberMe) {
-        localStorage.setItem('rememberedEmail', email.trim());
-        localStorage.setItem('rememberedRole', data.role);
-        localStorage.setItem('rememberMeActive', 'true');
-      } else {
-        localStorage.removeItem('rememberedEmail');
-        localStorage.removeItem('rememberedRole');
-        localStorage.removeItem('rememberMeActive');
-      }
-
-      // Only use the role from backend response (actual database role)
-      const actualRole = data.role;
-      login(data.token, { email: data.email, role: actualRole, name: data.name || email.split('@')[0] });
+      login(data.token, { email: data.email, role: data.role });
 
       // Success animation
       cardRef.current?.classList.add('success-animation');
       showToast('Login successful!', 'success');
 
-      const searchParams = new URLSearchParams(window.location.search);
-      const redirectPath = searchParams.get('redirect');
-
+      // Redirect based on role
+      const dashboardMap = {
+        [ROLES.ADMIN]: ROUTES.ADMIN_DASHBOARD,
+        [ROLES.MENTOR]: ROUTES.MENTOR_DASHBOARD,
+        [ROLES.STUDENT]: ROUTES.STUDENT_DASHBOARD,
+      };
       setTimeout(() => {
-        const intendedCourse = localStorage.getItem('intendedCourse');
-        if (intendedCourse) {
-          navigate(`/student-dashboard/courses/${intendedCourse}`, { replace: true });
-        } else if (redirectPath) {
-          navigate(redirectPath, { replace: true });
-        } else {
-          const dashboardMap = {
-            ADMIN: ROUTES.ADMIN_DASHBOARD,
-            MENTOR: ROUTES.MENTOR_DASHBOARD,
-            STUDENT: ROUTES.STUDENT_DASHBOARD,
-          };
-          navigate(dashboardMap[actualRole] || ROUTES.STUDENT_DASHBOARD, { replace: true });
-        }
+        navigate(dashboardMap[data.role] || ROUTES.STUDENT_DASHBOARD, { replace: true });
       }, 1000);
     } catch (error) {
       setLoading(false);
@@ -166,10 +109,7 @@ export default function LoginPage() {
         // Email not found
         setErrors({ email: 'Account does not exist. Please register first.', password: '' });
         setEmailGroupError(true);
-      } else if (status === 403) {
-        // Role mismatch or access denied
-        showToast(message || 'The selected login role does not match this account.', 'error');
-      } else if (status === 401) {
+      } else if (status === 401 || status === 403) {
         // Wrong password
         setErrors({ email: '', password: 'Wrong Password' });
         setPasswordGroupError(true);
@@ -219,19 +159,6 @@ export default function LoginPage() {
 
 
           <form id="loginForm" noValidate onSubmit={handleSubmit}>
-            {/* Login Role Selection */}
-            <div className="input-nexus-group" id="roleGroup">
-              <label className="form-label-nexus" htmlFor="role">Login As <span className="req">*</span></label>
-              <div className="position-relative">
-                <select id="role" className="form-select-nexus" style={{ paddingLeft: '45px' }} value={role} onChange={e => setRole(e.target.value)}>
-                  <option value="STUDENT">Student</option>
-                  <option value="MENTOR">Mentor</option>
-                  <option value="ADMIN">Admin</option>
-                </select>
-                <i className="bi bi-person-badge input-icon"></i>
-              </div>
-            </div>
-
             {/* Email */}
             <div className={`input-nexus-group${emailGroupError ? ' has-error' : ''}`} id="emailGroup">
               <label className="form-label-nexus" htmlFor="email">Email</label>
@@ -322,7 +249,7 @@ export default function LoginPage() {
 
             <div className="divider-row">New here?</div>
 
-            <Link to={ROUTES.REGISTER} className="btn-nexus-outline d-inline-block text-center mb-3" id="registerBtn">
+            <Link to={ROUTES.REGISTER} className="btn-nexus-outline d-inline-block text-center" id="registerBtn">
               Register
             </Link>
           </form>

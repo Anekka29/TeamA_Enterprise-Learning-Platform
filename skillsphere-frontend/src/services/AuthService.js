@@ -6,8 +6,8 @@ const AuthService = {
    * Login with email and password
    * @returns {Promise} { token, email, role }
    */
-  login(email, password, selectedRole, rememberMe = false) {
-    return apiClient.post(API_ENDPOINTS.LOGIN, { email, password, selectedRole, rememberMe });
+  login(email, password) {
+    return apiClient.post(API_ENDPOINTS.LOGIN, { email, password });
   },
 
   /**

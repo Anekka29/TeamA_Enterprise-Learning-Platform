@@ -1,1 +1,0 @@
-const i=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;function n(t){return i.test(t.trim())}function r(t){if(!t)return"";let e=0;return t.length>=8&&e++,/[A-Z]/.test(t)&&/[0-9]/.test(t)&&e++,/[^A-Za-z0-9]/.test(t)&&e++,e<=1?"weak":e===2?"medium":"strong"}export{r as g,n as i};
