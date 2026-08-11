@@ -80,15 +80,26 @@ public class SecurityConfig {
                         .authenticationEntryPoint(delegatingEntryPoint)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints - authentication
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/forgot-password", "/api/auth/validate-reset-token", "/api/auth/reset-password", "/error").permitAll()
+                        // Allow CORS OPTIONS preflight requests
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        // Public endpoints - authentication & static uploads
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/forgot-password", "/api/auth/validate-reset-token", "/api/auth/reset-password", "/error", "/uploads/**").permitAll()
                         // OAuth2 endpoints must be public
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+                        // Public GET endpoints for courses & internships
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/student/courses", "/api/student/courses/*", "/api/courses/**", "/api/public/courses", "/api/public/courses/**", "/api/internships", "/api/internships/*").permitAll()
+                        // Authenticated course, profile, complaint & internship endpoints
+                        .requestMatchers("/api/profile/**", "/api/courses/**", "/api/internships/**", "/api/complaints/**", "/api/complaints").authenticated()
                         
-                        // Role-based endpoint security
-                        .requestMatchers("/api/student/**").hasRole("STUDENT")
-                        .requestMatchers("/api/mentor/**").hasRole("MENTOR")
+                        // Role-based endpoint security (apply after specific public GET rules)
+                        .requestMatchers("/api/student/**").hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers("/api/mentor/**").hasAnyRole("MENTOR", "ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // Quiz endpoints are covered by the above role-based rules
+                        // Notifications & Complaints endpoint requires authentication (all roles)
+                        .requestMatchers("/api/notifications/**").authenticated()
+                        // AI & Roadmap endpoints require authentication (all roles)
+                        .requestMatchers("/api/ai/**", "/api/roadmaps/**").authenticated()
                         
                         // All other requests require authentication
                         .anyRequest().authenticated()
@@ -110,7 +121,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);

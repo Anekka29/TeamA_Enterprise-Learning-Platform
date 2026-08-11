@@ -9,12 +9,17 @@ const LoginPage = lazy(() => import('../pages/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/RegisterPage'));
 const DashboardRedirect = lazy(() => import('../pages/DashboardRedirect'));
 const StudentDashboard = lazy(() => import('../pages/StudentDashboard'));
+const StudentCourseDetails = lazy(() => import('../pages/StudentCourseDetails'));
 const MentorDashboard = lazy(() => import('../pages/MentorDashboard'));
 const AdminDashboard = lazy(() => import('../pages/AdminDashboard'));
 const AdminRoleManagement = lazy(() => import('../pages/AdminRoleManagement'));
 const ForgotPasswordPage = lazy(() => import('../pages/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('../pages/ResetPasswordPage'));
 const OAuth2RedirectHandler = lazy(() => import('../pages/OAuth2RedirectHandler'));
+const ProfilePage = lazy(() => import('../pages/ProfilePage'));
+const MyProfile = lazy(() => import('../pages/MyProfile'));
+const EditProfile = lazy(() => import('../pages/EditProfile'));
+const Settings = lazy(() => import('../pages/Settings'));
 
 // Simple loading fallback (keeps bundle clean)
 function PageLoader() {
@@ -42,6 +47,15 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute>
               <DashboardRedirect />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path={ROUTES.STUDENT_COURSE_DETAILS}
+          element={
+            <ProtectedRoute>
+              <StudentCourseDetails />
             </ProtectedRoute>
           }
         />
@@ -78,6 +92,38 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute requiredRole="ADMIN">
               <AdminRoleManagement />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path={ROUTES.PROFILE}
+          element={<Navigate to={ROUTES.MY_PROFILE} replace />}
+        />
+
+        <Route
+          path={ROUTES.MY_PROFILE}
+          element={
+            <ProtectedRoute>
+              <MyProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path={ROUTES.EDIT_PROFILE}
+          element={
+            <ProtectedRoute>
+              <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path={ROUTES.SETTINGS}
+          element={
+            <ProtectedRoute>
+              <Settings />
             </ProtectedRoute>
           }
         />

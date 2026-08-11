@@ -50,16 +50,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .fullName(name != null ? name : "Google User")
                         .username(generateUniqueUsername(email))
                         .password(passwordEncoder.encode("GOOGLE_AUTH_USER"))
-                        .college("Not Provided")
-                        .department("Not Provided")
-                        .year("Not Provided")
-                        .phoneNumber("")
                         .role(Role.STUDENT)
                         .provider(Provider.GOOGLE)
                         .providerId(sub)
                         .profileImage(picture)
                         .emailVerified(true)
                         .enabled(true)
+                        .profileCompleted(false)
                         .build();
                 
                 log.info("New user object before save: {}", newUser);
