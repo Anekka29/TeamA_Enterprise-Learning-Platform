@@ -1,23 +1,38 @@
-# TeamA_SkillSphere-learning-nexus-fsd
 # 🎓 SkillSphere Nexus
 
-> *Learn • Connect • Grow*
+> **Learn • Connect • Grow**
 
-SkillSphere Nexus is a modern full-stack Learning Management System (LMS) developed as part of the *Infosys Virtual Internship*. The platform provides separate dashboards for Students, Mentors, and Administrators with secure authentication, role-based authorization, and a modern responsive interface.
+SkillSphere Nexus is a modern full-stack Learning Management System (LMS) developed as part of the **Infosys Virtual Internship**.
 
----
-
-## 📌 Project Overview
-
-SkillSphere Nexus is designed to bridge the gap between students and mentors by providing an interactive platform for learning, mentoring, assessments, and progress tracking.
-
-The application follows a *React + Spring Boot* architecture with *JWT Authentication* and *MySQL Database*.
+The platform provides separate dashboards for **Students, Mentors, and Administrators** with secure authentication, role-based authorization, and a modern responsive interface.
 
 ---
 
-## ✨ Features
+# 📌 Project Overview
 
-### 👨‍🎓 Student
+SkillSphere Nexus is designed to bridge the gap between students and mentors by providing an interactive platform for:
+
+- Learning
+- Mentoring
+- Assessments
+- Progress Tracking
+- User Management
+- Platform Administration
+
+The application follows a **React + Spring Boot** architecture with:
+
+- JWT Authentication
+- Spring Security
+- Role-Based Authorization
+- REST APIs
+- Hibernate / JPA
+- MySQL Database
+
+---
+
+# ✨ Features
+
+## 👨‍🎓 Student
 
 - Student Registration
 - Secure Login
@@ -28,9 +43,7 @@ The application follows a *React + Spring Boot* architecture with *JWT Authentic
 - Achievements
 - Settings
 
----
-
-### 👨‍🏫 Mentor
+## 👨‍🏫 Mentor
 
 - Mentor Dashboard
 - Student Management
@@ -40,9 +53,7 @@ The application follows a *React + Spring Boot* architecture with *JWT Authentic
 - Resources
 - Messages
 
----
-
-### 👨‍💼 Admin
+## 👨‍💼 Admin
 
 - User Management
 - Role Management
@@ -53,12 +64,12 @@ The application follows a *React + Spring Boot* architecture with *JWT Authentic
 
 ---
 
-## 🔐 Security Features
+# 🔐 Security Features
 
 - JWT Authentication
 - Spring Security
 - BCrypt Password Encryption
-- Role Based Authorization
+- Role-Based Authorization
 - Protected Routes
 - Secure REST APIs
 - Password Validation
@@ -68,9 +79,9 @@ The application follows a *React + Spring Boot* architecture with *JWT Authentic
 
 ---
 
-## 💻 Tech Stack
+# 💻 Tech Stack
 
-### Frontend
+## Frontend
 
 - React.js
 - React Router
@@ -80,9 +91,7 @@ The application follows a *React + Spring Boot* architecture with *JWT Authentic
 - JavaScript (ES6+)
 - React Icons
 
----
-
-### Backend
+## Backend
 
 - Java 17
 - Spring Boot
@@ -92,15 +101,11 @@ The application follows a *React + Spring Boot* architecture with *JWT Authentic
 - JWT Authentication
 - Maven
 
----
-
-### Database
+## Database
 
 - MySQL
 
----
-
-### Development Tools
+## Development Tools
 
 - IntelliJ IDEA
 - VS Code
@@ -111,9 +116,9 @@ The application follows a *React + Spring Boot* architecture with *JWT Authentic
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
-
+```text
 SkillSphere-Nexus
 │
 ├── skillsphere-frontend
@@ -138,35 +143,36 @@ SkillSphere-Nexus
 │   └── application.properties
 │
 └── README.md
-
-
----
-
-# 🏗️ System Architecture
-
-
-React Frontend
-        │
-        │ REST API
-        ▼
-Spring Boot Backend
-        │
-Spring Security + JWT
-        │
-Hibernate / JPA
-        │
-MySQL Database
-
-
----
-
-# 🔄 Application Flow
-
-
+🏗️ System Architecture
+┌─────────────────────────┐
+│     React Frontend      │
+│                         │
+│ React Router            │
+│ Axios                   │
+│ HTML / CSS / JavaScript │
+└────────────┬────────────┘
+             │
+             │ REST API
+             ▼
+┌─────────────────────────┐
+│    Spring Boot Backend  │
+│                         │
+│ Spring Security         │
+│ JWT Authentication      │
+│ Spring Data JPA         │
+│ Hibernate               │
+└────────────┬────────────┘
+             │
+             │ Database Connection
+             ▼
+┌─────────────────────────┐
+│          MySQL          │
+└─────────────────────────┘
+🔄 Application Flow
 Landing Page
       │
       ▼
-Register/Login
+Register / Login
       │
       ▼
 Spring Security
@@ -177,257 +183,336 @@ JWT Authentication
       ▼
 Role Validation
       │
-      ├──────────────┐
-      │              │
-      ▼              ▼
-Student Dashboard
-Mentor Dashboard
-Admin Dashboard
+      ├──────────────────┬──────────────────┐
+      │                  │                  │
+      ▼                  ▼                  ▼
+ Student Dashboard   Mentor Dashboard   Admin Dashboard
+📡 REST APIs
+Authentication APIs
+Method	Endpoint
+POST	/api/auth/register
+POST	/api/auth/login
+👥 User Roles
+Student
 
+Students can:
 
----
+View Dashboard
+Track Learning Progress
+View Sessions
+View Achievements
+Manage Profile
+Mentor
 
-# 📡 REST APIs
+Mentors can:
 
-## Authentication
+Manage Students
+Conduct Sessions
+View Analytics
+Manage Resources
+Admin
 
-| Method | Endpoint |
-|----------|----------------------|
-| POST | /api/auth/register |
-| POST | /api/auth/login |
+Administrators can:
 
----
+Manage Users
+Assign Roles
+View Platform Analytics
+Configure the System
+🗄️ Database
 
-# 👥 User Roles
-
-### Student
-
-- View Dashboard
-- Learning Progress
-- Sessions
-- Achievements
-- Profile
-
----
-
-### Mentor
-
-- Manage Students
-- Conduct Sessions
-- View Analytics
-- Resources
-
----
-
-### Admin
-
-- Manage Users
-- Assign Roles
-- Platform Analytics
-- System Configuration
-
----
-
-# 🗄️ Database
-
-Main User Table
-
+The main user table is:
 
 users
-
-
 Important Fields
-
-- id
-- full_name
-- username
-- email
-- password
-- college
-- department
-- year
-- phone_number
-- role
-- created_at
-
----
-
-# 🔑 Authentication Process
-
-
+Field	Description
+id	User ID
+full_name	Full name
+username	Username
+email	Email address
+password	Encrypted password
+college	College name
+department	Department
+year	Academic year
+phone_number	Phone number
+role	User role
+created_at	Account creation time
+🔑 Authentication Process
 User Login
-
-      │
-
-      ▼
-
+    │
+    ▼
 Authentication Manager
-
-      │
-
-      ▼
-
+    │
+    ▼
 Spring Security
-
-      │
-
-      ▼
-
+    │
+    ▼
 Password Verification
-
-      │
-
-      ▼
-
+    │
+    ▼
 JWT Token Generation
-
-      │
-
-      ▼
-
+    │
+    ▼
 Token Returned
-
-      │
-
-      ▼
-
+    │
+    ▼
 Frontend Stores Token
-
-      │
-
-      ▼
-
+    │
+    ▼
 Protected APIs
+🚀 Installation & Setup
+Prerequisites
 
+Before running the project, make sure the following are installed:
 
----
+Java 17
+Maven
+Node.js
+npm
+MySQL
+Git
 
-# 🚀 Installation
+Recommended development tools:
 
-## Clone Repository
+VS Code
+IntelliJ IDEA
+MySQL Workbench
+Postman
+1️⃣ Clone the Repository
 
-bash
+Open a terminal and run:
+
 git clone https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd.git
 
+Then move into the project directory:
 
----
+cd TeamA_SkillSphere-learning-nexus-fsd
+2️⃣ Backend Setup
 
-## Backend
+The backend is developed using Java 17 and Spring Boot.
 
-bash
+Step 1 — Open Backend Folder
+
+From the project root:
+
 cd skillsphere-backend
+Step 2 — Configure MySQL
 
+Open:
 
-Configure
+skillsphere-backend/application.properties
 
+Configure the MySQL database connection according to your local MySQL setup.
 
-application.properties
+The backend uses MySQL for storing application data.
 
+Make sure your MySQL server is running before starting the backend.
 
+Step 3 — Build the Backend
 
-Run
+Run:
 
-bash
 mvn clean install
+
+This will:
+
+Download required Maven dependencies
+Compile the backend
+Run the build process
+Generate the backend application
+Step 4 — Start the Backend
+
+Run:
 
 mvn spring-boot:run
 
-
-Backend
-
+The Spring Boot backend will run at:
 
 http://localhost:8080
+3️⃣ Frontend Setup
 
+The frontend is developed using React.js.
 
----
+Step 1 — Open a New Terminal
 
-## Frontend
+Keep the backend terminal running.
 
-bash
+Open another terminal and go to the project root:
+
+cd TeamA_SkillSphere-learning-nexus-fsd
+
+Then enter the frontend folder:
+
 cd skillsphere-frontend
+Step 2 — Install Dependencies
+
+Run:
 
 npm install
 
+This installs all the dependencies defined in the frontend package.json.
+
+Step 3 — Start the Frontend
+
+Run:
+
 npm run dev
 
+The React/Vite development server will start.
 
-Frontend
-
+The frontend will normally be available at:
 
 http://localhost:5173
+🔗 Running Frontend and Backend Together
 
+The frontend and backend should run simultaneously.
 
----
+Terminal 1 — Backend
+cd skillsphere-backend
+mvn spring-boot:run
 
-# 📷 Screenshots
+Backend URL:
 
-- Landing Page
-- Login Page
-- Registration Page
-- Student Dashboard
-- Mentor Dashboard
-- Admin Dashboard
+http://localhost:8080
+Terminal 2 — Frontend
+cd skillsphere-frontend
+npm install
+npm run dev
 
-(Add screenshots here)
+Frontend URL:
 
----
+http://localhost:5173
+🔄 Frontend–Backend Communication
 
-# 🌟 Future Enhancements
+The application follows this communication flow:
 
-- Google OAuth Login
-- Email Verification
-- Forgot Password
-- OTP Verification
-- Dark Mode
-- Course Enrollment
-- Quiz Module
-- Assignment Submission
-- Certificate Generation
-- Notifications
-- AI Career Recommendation
-- Chat System
-- Video Sessions
-- Attendance Management
-- Cloud Deployment
+                    USER
+                      │
+                      ▼
+              React Frontend
+                      │
+                      │ Axios
+                      │ REST API
+                      ▼
+              Spring Boot Backend
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+          ▼                       ▼
+   Spring Security           Controllers
+          │                       │
+          ▼                       ▼
+    JWT Authentication        Services
+                                  │
+                                  ▼
+                             Repositories
+                                  │
+                                  ▼
+                               MySQL
+🔐 Login and JWT Flow
 
----
+When a user logs into the application:
 
-# 📖 Learning Outcomes
+User enters Email + Password
+             │
+             ▼
+       React Login Page
+             │
+             ▼
+   POST /api/auth/login
+             │
+             ▼
+      Spring Boot Backend
+             │
+             ▼
+      Spring Security
+             │
+             ▼
+     Password Verification
+             │
+             ▼
+       JWT Token Created
+             │
+             ▼
+       Token Returned
+             │
+             ▼
+     Frontend Stores Token
+             │
+             ▼
+       Protected APIs
+             │
+             ▼
+      Role Validation
+             │
+      ┌──────┼──────┐
+      ▼      ▼      ▼
+   Student Mentor  Admin
+   Dashboard Dashboard Dashboard
+🧪 API Testing
 
-This project demonstrates
+The REST APIs can be tested using Postman.
 
-- Full Stack Development
-- React Development
-- Spring Boot
-- REST APIs
-- Authentication
-- Authorization
-- JWT Security
-- Database Integration
-- Responsive UI Design
-- MVC Architecture
-- Version Control using Git & GitHub
+Register
+POST
+/api/auth/register
+Login
+POST
+/api/auth/login
 
----
----
+The login response provides the authentication information required for accessing protected APIs.
 
-## 📂 Repository
+The following features are planned for future versions:
 
-**Repository Name:** `TeamA_SkillSphere-learning-nexus-fsd`
+Google OAuth Login
+Email Verification
+Forgot Password
+OTP Verification
+Dark Mode
+Course Enrollment
+Quiz Module
+Assignment Submission
+Certificate Generation
+Notifications
+AI Career Recommendation
+Chat System
+Video Sessions
+Attendance Management
+Cloud Deployment
+📖 Learning Outcomes
+
+This project demonstrates practical implementation of:
+
+Full Stack Development
+React Development
+Spring Boot
+REST APIs
+Authentication
+Authorization
+JWT Security
+Database Integration
+Responsive UI Design
+MVC Architecture
+Version Control using Git & GitHub
+📂 Repository
+
+Repository Name:
+
+TeamA_SkillSphere-learning-nexus-fsd
 
 GitHub Repository:
+
 https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd
 
----
+👩‍💻 Team Members
+Anekka T.S.
+Chandni Singh
+B. Rajya Lakshmi
+G. S. Bharanidharan
+CH. G. V. Sindhusha
+⭐ Project
 
-## 👩‍💻 Team Members
+SkillSphere Nexus
 
-- Anekka T.S.
-- Chandni Singh
-- B. Rajya Lakshmi
-- G. S. Bharanidharan
-- CH. G. V. Sindhusha
+Learn • Connect • Grow
 
----
-
-⭐ If you found this project useful, don't forget to **star** the repository!
+If you found this project useful, don't forget to ⭐ star the repository!
