@@ -223,18 +223,17 @@ Configure the System
 The main user table is:
 
 users
-Important Fields
-Field	Description
-id	User ID
-full_name	Full name
-username	Username
-email	Email address
-password	Encrypted password
-college	College name
-department	Department
-year	Academic year
-phone_number	Phone number
-role	User role
+Important Fields           Field	Description
+id	                             User ID
+full_name                        Full name
+username	                       Username
+email	                           Email address
+password	                       Encrypted password
+college	                         College name
+department	                     Department
+year	                           Academic year
+phone_number	                   Phone number
+role	                           User role
 created_at	Account creation time
 🔑 Authentication Process
 User Login
