@@ -47,20 +47,11 @@ export default function Navbar() {
       <nav className="floating-navbar-pill">
         <div className="d-flex align-items-center justify-content-between w-100 position-relative">
           
-          {/* FAR LEFT: Brand Logo */}
-          <Link className="d-flex align-items-center gap-2 text-decoration-none" to="/" onClick={closeMobileNav}>
-            <div className="position-relative d-flex align-items-center justify-content-center" style={{ width: '38px', height: '38px' }}>
+          {/* FAR LEFT: Brand Logo (Only Logo as requested) */}
+          <Link className="d-flex align-items-center text-decoration-none" to="/" onClick={closeMobileNav}>
+            <div className="position-relative d-flex align-items-center justify-content-center" style={{ width: '42px', height: '42px' }}>
               <div className="position-absolute w-100 h-100 rounded-circle" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)' }}></div>
-              <img src={logoImg} alt="SkillSphere Nexus" style={{ height: '34px', width: 'auto', objectFit: 'contain', zIndex: 1 }} />
-            </div>
-            <div className="d-flex align-items-center gap-2">
-              <span className="brand-title-gradient fs-5 tracking-tight d-none d-sm-inline-block">
-                SkillSphere
-              </span>
-              <span className="brand-nexus-badge">
-                <span className="rounded-circle bg-success d-inline-block" style={{ width: '6px', height: '6px', boxShadow: '0 0 6px #10b981' }}></span>
-                Nexus
-              </span>
+              <img src={logoImg} alt="Enterprise Learning Platform with Skill and Career Guidance System" style={{ height: '38px', width: 'auto', objectFit: 'contain', zIndex: 1 }} />
             </div>
           </Link>
 

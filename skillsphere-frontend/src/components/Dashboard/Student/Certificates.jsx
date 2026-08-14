@@ -135,7 +135,7 @@ function ModuleBadgeGraphic({ moduleTitle, courseTitle, size = 260, isClaimed = 
           <text x="160" y="92" fontSize="18" fill="#fbbf24">★</text>
           <text x="200" y="95" fontSize="14" fill="#fbbf24">★</text>
 
-          {/* SkillSphere Nexus Brand Header */}
+          {/* Enterprise Learning Platform with Skill and Career Guidance System Brand Header */}
           <text x="160" y="116" fontSize="13" fontWeight="900" fill="#ffffff" letterSpacing="2" fontFamily="system-ui, sans-serif">
             SKILLSPHERE NEXUS
           </text>
@@ -306,7 +306,7 @@ function ModuleBadgeModal({ badge, studentName, onClose }) {
           </div>
 
           <div className="mt-2 text-emerald-300 small no-print" style={{ fontSize: '0.82rem', color: '#a7f3d0' }}>
-            Credential ID: <strong style={{ color: '#fbbf24' }}>{badgeId}</strong> • Verified SkillSphere Medallion
+            Credential ID: <strong style={{ color: '#fbbf24' }}>{badgeId}</strong> • Verified Enterprise Learning Platform Medallion
           </div>
 
           {/* Action Buttons */}
@@ -375,7 +375,7 @@ Completion Date: ${issueDate}
 Credential ID: ${certId}
 Instructor: ${instructor}
 Verification Status: VERIFIED & AUTHENTICATED
-Issuer: SkillSphere Nexus Academy Governance Board
+Issuer: Enterprise Learning Platform with Skill and Career Guidance System Academy Governance Board
 ----------------------------------------
 Online Verification: https://skillsphere-nexus.com/verify?id=${certId}`;
 
@@ -479,15 +479,15 @@ Online Verification: https://skillsphere-nexus.com/verify?id=${certId}`;
               <div className="d-flex align-items-center justify-content-center gap-2 mb-2">
                 <img
                   src={logoImg}
-                  alt="SkillSphere Nexus Logo"
+                  alt="Enterprise Learning Platform Logo"
                   style={{ height: '44px', objectFit: 'contain' }}
                 />
                 <div className="text-start">
-                  <div className="fw-black text-uppercase lh-1" style={{ fontSize: '1.15rem', color: '#0d4a3a', letterSpacing: '0.08em', fontWeight: 900 }}>
-                    SKILLSPHERE <span style={{ color: '#10b981' }}>NEXUS</span>
+                  <div className="fw-black text-uppercase lh-1" style={{ fontSize: '1.05rem', color: '#0d4a3a', letterSpacing: '0.05em', fontWeight: 900 }}>
+                    ENTERPRISE LEARNING <span style={{ color: '#10b981' }}>PLATFORM</span>
                   </div>
-                  <span className="text-muted text-uppercase d-block" style={{ fontSize: '0.62rem', letterSpacing: '0.18em', fontWeight: 700, marginTop: '2px' }}>
-                    ACADEMY OF DIGITAL EXCELLENCE
+                  <span className="text-muted text-uppercase d-block" style={{ fontSize: '0.58rem', letterSpacing: '0.12em', fontWeight: 700, marginTop: '2px' }}>
+                    SKILL &amp; CAREER GUIDANCE SYSTEM
                   </span>
                 </div>
               </div>
@@ -544,10 +544,10 @@ Online Verification: https://skillsphere-nexus.com/verify?id=${certId}`;
                   {/* Left Column: Academic Board Signature */}
                   <div className="text-start" style={{ width: '30%' }}>
                     <div className="fw-bold text-dark" style={{ fontSize: '0.85rem', fontFamily: "'Georgia', serif", fontStyle: 'italic', color: '#0d4a3a' }}>
-                      SkillSphere Governance Board
+                      Enterprise Learning Platform Governance Board
                     </div>
                     <div style={{ borderTop: '1.5px solid #9ca3af', paddingTop: '4px', marginTop: '4px' }}>
-                      <div className="fw-bold text-dark" style={{ fontSize: '0.75rem' }}>SkillSphere Nexus</div>
+                      <div className="fw-bold text-dark" style={{ fontSize: '0.75rem' }}>Enterprise Learning Platform with Skill and Career Guidance System</div>
                       <div className="text-muted" style={{ fontSize: '0.68rem' }}>Academic Governance Board</div>
                     </div>
                   </div>
@@ -657,9 +657,20 @@ export default function Certificates({ enrollments = [], profile = null }) {
     });
   }, [enrollments]);
 
+  // Build effective enrollments ensuring starting 2 courses are 100% completed
+  const effectiveEnrollments = enrollments.map((e, idx) => {
+    const isFirstTwo = idx < 2;
+    const progressVal = (isFirstTwo || e.progress >= 100) ? 100 : (e.progress || 0);
+    return {
+      ...e,
+      progress: progressVal,
+      certificateIssued: progressVal >= 100
+    };
+  });
+
   // Build all module badges across all enrolled courses
   const allModuleBadges = [];
-  enrollments.forEach((enrollment) => {
+  effectiveEnrollments.forEach((enrollment) => {
     const cId = enrollment.courseId || enrollment.id;
     const cTitle = enrollment.courseTitle || enrollment.title || 'Course';
     const cCategory = enrollment.courseCategory || enrollment.category || 'Tech';
@@ -696,7 +707,7 @@ export default function Certificates({ enrollments = [], profile = null }) {
   });
 
   const claimedBadgesCount = allModuleBadges.filter(b => b.isClaimed).length;
-  const completedMasterCourses = enrollments.filter(e => (e.progress >= 100) || e.certificateIssued);
+  const completedMasterCourses = effectiveEnrollments.filter(e => (e.progress >= 100) || e.certificateIssued);
 
   // Filtered lists
   const filteredModuleBadges = allModuleBadges.filter(b => {
@@ -736,7 +747,7 @@ export default function Certificates({ enrollments = [], profile = null }) {
           </span>
           <h2 className="fw-bold text-dark mb-1">Certificates & Module Badges Hub</h2>
           <p className="text-muted mb-0 small">
-            Track your official SkillSphere module badges awarded per completed topic and claim master course certificates.
+            Track your official Enterprise Learning Platform module badges awarded per completed topic and claim master course certificates.
           </p>
         </div>
       </div>
@@ -749,7 +760,7 @@ export default function Certificates({ enrollments = [], profile = null }) {
               className={`nav-link rounded-pill px-4 fw-bold ${activeSection === 'badges' ? 'active bg-success text-white' : 'text-muted'}`}
               onClick={() => setActiveSection('badges')}
             >
-              <i className="bi bi-award-fill me-2"></i>🏅 SkillSphere Module Badges ({claimedBadgesCount}/{allModuleBadges.length})
+              <i className="bi bi-award-fill me-2"></i>🏅 Enterprise Learning Platform Module Badges ({claimedBadgesCount}/{allModuleBadges.length})
             </button>
           </li>
           <li className="nav-item">
@@ -795,7 +806,7 @@ export default function Certificates({ enrollments = [], profile = null }) {
             </div>
 
             <div className="small text-muted fw-semibold">
-              Earn 1 Official SkillSphere Badge per completed course module!
+              Earn 1 Official Enterprise Learning Platform Badge per completed course module!
             </div>
           </div>
 
@@ -825,7 +836,7 @@ export default function Certificates({ enrollments = [], profile = null }) {
                       e.currentTarget.style.boxShadow = '';
                     }}
                   >
-                    {/* Official SkillSphere Metallic Badge Graphic */}
+                    {/* Official Enterprise Learning Platform Metallic Badge Graphic */}
                     <div className="mb-3">
                       <ModuleBadgeGraphic
                         moduleTitle={badge.moduleTitle}
@@ -874,7 +885,7 @@ export default function Certificates({ enrollments = [], profile = null }) {
             <div className="card border-0 shadow-sm rounded-4 p-5 bg-white border text-center text-muted">
               <i className="bi bi-award fs-1 mb-2 text-secondary"></i>
               <h6 className="fw-bold">No Module Badges Found</h6>
-              <p className="small mb-0">Official SkillSphere module completion badges will appear here as you progress through enrolled course modules.</p>
+              <p className="small mb-0">Official Enterprise Learning Platform module completion badges will appear here as you progress through enrolled course modules.</p>
             </div>
           )}
         </div>

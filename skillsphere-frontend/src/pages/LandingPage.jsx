@@ -24,7 +24,7 @@ export default function LandingPage() {
 
   // Text Conveyor Rotator phrases for Hero Heading
   const conveyorPhrases = [
-    'SkillSphere Nexus',
+    'Enterprise Learning Platform with Skill & Career Guidance System',
     'AI Career Guidance',
     'Real Internships',
     'ATS Resume Builder',
@@ -184,7 +184,7 @@ export default function LandingPage() {
                 <>
                   <span className="eyebrow-badge"><span className="dot bg-success"></span> User Session Active ({user?.role})</span>
                   <h1 className="hero-heading">Welcome back, <span className="highlight">{user?.name || user?.username || 'Learner'}</span></h1>
-                  <p className="hero-subheading">Access your personalized SkillSphere workspace, track module accomplishments, and message your mentors.</p>
+                  <p className="hero-subheading">Access your personalized Enterprise Learning Platform workspace, track module accomplishments, and message your mentors.</p>
                   <div className="hero-cta-row">
                     <Link to={ROUTES.DASHBOARD} className="btn btn-nexus-primary btn-lg-nexus text-nowrap">
                       Go to Dashboard <i className="bi bi-grid-fill ms-1"></i>
@@ -272,13 +272,13 @@ export default function LandingPage() {
                   {/* Header: Brand & Live Status */}
                   <div className="d-flex justify-content-between align-items-center mb-4">
                     <div className="d-flex align-items-center gap-2">
-                      <img src={logoImg} alt="SkillSphere Logo" style={{ height: '38px', objectFit: 'contain' }} />
+                      <img src={logoImg} alt="Enterprise Learning Platform Logo" style={{ height: '38px', objectFit: 'contain' }} />
                       <div>
-                        <div className="fw-black text-uppercase lh-1" style={{ fontSize: '1rem', color: '#0d4a3a', fontWeight: 900 }}>
-                          SKILLSPHERE <span style={{ color: '#10b981' }}>NEXUS</span>
+                        <div className="fw-black text-uppercase lh-1" style={{ fontSize: '0.9rem', color: '#0d4a3a', fontWeight: 900 }}>
+                          ENTERPRISE LEARNING PLATFORM
                         </div>
                         <span className="text-muted text-uppercase text-xs fw-bold" style={{ fontSize: '0.62rem', letterSpacing: '0.14em' }}>
-                          ALL-IN-ONE CONNECTED PLATFORM
+                          SKILL &amp; CAREER GUIDANCE SYSTEM
                         </span>
                       </div>
                     </div>
@@ -287,7 +287,7 @@ export default function LandingPage() {
                     </span>
                   </div>
 
-                  {/* 4 Pillars Grid of SkillSphere Nexus */}
+                  {/* 4 Pillars Grid of Enterprise Learning Platform with Skill and Career Guidance System */}
                   <div className="row g-3 mb-4">
                     <div className="col-6">
                       <div className="p-3 rounded-4 bg-light border border-light-subtle h-100 transition-all hover-lift">
@@ -631,7 +631,7 @@ export default function LandingPage() {
         <div className="container container-xl">
           <div className="text-center mx-auto reveal" style={{ maxWidth: 640 }}>
             <span className="section-eyebrow">The Process</span>
-            <h2 className="section-title">How SkillSphere Nexus works</h2>
+            <h2 className="section-title">How Enterprise Learning Platform works</h2>
             <p className="section-desc mx-auto">Four steps stand between you and a career plan built specifically for you.</p>
           </div>
           <div className="steps-wrap mt-5">
@@ -666,7 +666,7 @@ export default function LandingPage() {
             {[
               { initials: 'AN', name: 'Ayesha Nair', role: 'Computer Science, 3rd Year', quote: '"I had no idea what career path fit me. The skill assessment showed me gaps I didn\'t know existed, and the roadmap made the next step obvious."', stars: 5 },
               { initials: 'RK', name: 'Rohan Kulkarni', role: 'Data Science, Final Year', quote: '"The progress tracking kept me consistent. Seeing the dashboard fill up every week was oddly motivating — like a game I actually wanted to win."', stars: 5 },
-              { initials: 'MS', name: 'Meera Sharma', role: 'Business Analytics, 2nd Year', quote: '"I compared three platforms before this one. SkillSphere Nexus was the only one that felt built for students, not recruiters."', stars: 4.5 },
+              { initials: 'MS', name: 'Meera Sharma', role: 'Business Analytics, 2nd Year', quote: '"I compared three platforms before this one. Enterprise Learning Platform was the only one that felt built for students, not recruiters."', stars: 4.5 },
             ].map((t, i) => (
               <div key={i} className="col-md-6 col-lg-4 reveal">
                 <div className="testimonial-card">

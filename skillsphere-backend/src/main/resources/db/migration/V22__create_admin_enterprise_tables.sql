@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS complaints (
 
 CREATE TABLE IF NOT EXISTS system_settings (
     id BIGINT PRIMARY KEY,
-    platform_name VARCHAR(255) NOT NULL DEFAULT 'SkillSphere Nexus',
+    platform_name VARCHAR(255) NOT NULL DEFAULT 'Enterprise Learning Platform with Skill and Career Guidance System',
     support_email VARCHAR(255) NOT NULL DEFAULT 'support@skillsphere.com',
     logo_url VARCHAR(500),
     smtp_host VARCHAR(255) DEFAULT 'smtp.gmail.com',

@@ -262,7 +262,7 @@ export default function CourseListing({ onShowToast, onEnroll, catalogRefreshKey
                   </p>
                   
                   <div className="d-flex flex-wrap gap-2 small text-muted mb-3">
-                    <span><i className="bi bi-person me-1 text-success"></i>{course.mentorName || 'SkillSphere Mentor'}</span>
+                    <span><i className="bi bi-person me-1 text-success"></i>{course.mentorName || 'Enterprise Learning Platform Mentor'}</span>
                     <span><i className="bi bi-clock me-1 text-success"></i>{course.estimatedDuration || 'Self-paced'}</span>
                     <span><i className="bi bi-collection-play me-1 text-success"></i>{course.lessonCount || 0} lessons</span>
                     <span><i className="bi bi-people me-1 text-success"></i>{course.enrollmentCount || 0} enrolled</span>

@@ -197,7 +197,7 @@ export default function DashboardSettings({ onShowToast }) {
                   <input
                     type="text"
                     className="form-control rounded-3"
-                    placeholder="e.g. SkillSphere Institute of Technology"
+                    placeholder="e.g. Enterprise Learning Platform Institute of Technology"
                     value={profileForm.college}
                     onChange={(e) => setProfileForm({ ...profileForm, college: e.target.value })}
                   />

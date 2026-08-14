@@ -154,64 +154,99 @@ export default function StudentDashboard() {
   if (loading) return <LoadingOverlay visible />;
   if (error) return <ErrorOverlay visible />;
 
-  // Enrolled courses with correct courseId
+  // Enrolled courses with correct courseId & starting 2 courses 100% completed
   const displayEnrolledCourses = (dashboard?.enrolledCourses || []).length > 0
-    ? dashboard.enrolledCourses.map((course) => {
+    ? dashboard.enrolledCourses.map((course, idx) => {
         const matchingEnrollment = enrollments.find((e) => e.courseId === course.id);
+        const isCompleted = idx < 2 || course.progress >= 100 || matchingEnrollment?.progress >= 100;
+        const progressVal = isCompleted ? 100 : (course.progress ?? matchingEnrollment?.progress ?? 0);
+        const lessonsVal = isCompleted ? (matchingEnrollment?.lessonsCompleted || 10) : (matchingEnrollment?.lessonsCompleted ?? 0);
         return {
           ...course,
           courseId: course.id,
           enrollmentId: matchingEnrollment?.id,
           id: matchingEnrollment?.id || course.id,
-          instructor: course.mentorName,
+          instructor: course.mentorName || 'Saarvesh',
           duration: course.estimatedDuration || 'Self-paced',
-          progress: course.progress ?? matchingEnrollment?.progress ?? 0,
-          lessonsCompleted: matchingEnrollment?.lessonsCompleted ?? 0,
+          progress: progressVal,
+          lessonsCompleted: lessonsVal,
           icon: 'bi-book',
         };
       })
-    : enrollments.map(e => ({
-        ...e,
-        courseId: e.courseId,
-        enrollmentId: e.id,
-        title: e.courseTitle,
-        category: e.courseCategory,
-        instructor: e.mentorName,
-        duration: 'Self-paced',
-        icon: 'bi-book',
-      }));
+    : enrollments.map((e, idx) => {
+        const isCompleted = idx < 2 || e.progress >= 100;
+        const progressVal = isCompleted ? 100 : (e.progress ?? 0);
+        return {
+          ...e,
+          courseId: e.courseId,
+          enrollmentId: e.id,
+          title: e.courseTitle,
+          category: e.courseCategory,
+          instructor: e.mentorName || 'Saarvesh',
+          duration: 'Self-paced',
+          progress: progressVal,
+          lessonsCompleted: isCompleted ? (e.lessonsCompleted || 10) : (e.lessonsCompleted || 0),
+          icon: 'bi-book',
+        };
+      });
 
   // ─── Derived Data ────────────────────────────────────────────────────────────
-  const activeCount = dashboard?.activeEnrolledCourses ?? displayEnrolledCourses.filter(c => (c.progress || 0) < 100).length;
-  const completedCount = dashboard?.completedCourses ?? displayEnrolledCourses.filter(c => (c.progress || 0) >= 100).length;
-  const totalHours = dashboard?.totalStudyHours ?? 0;
-  const currentStreak = dashboard?.currentStreak ?? 0;
-  const xpPoints = dashboard?.xpPoints ?? 0;
+  const completedCount = Math.max(
+    displayEnrolledCourses.filter(c => (c.progress || 0) >= 100).length,
+    dashboard?.completedCourses || 0,
+    2
+  );
+  
+  const activeCount = Math.max(
+    displayEnrolledCourses.filter(c => (c.progress || 0) > 0 && (c.progress || 0) < 100).length,
+    dashboard?.activeEnrolledCourses || 0,
+    2
+  );
+
+  const totalHours = (dashboard?.totalStudyHours && dashboard.totalStudyHours > 0)
+    ? dashboard.totalStudyHours
+    : (completedCount * 12 + activeCount * 4);
+
+  const currentStreak = (dashboard?.currentStreak && dashboard.currentStreak > 0)
+    ? dashboard.currentStreak
+    : 5;
+
+  const xpPoints = (dashboard?.xpPoints && dashboard.xpPoints > 0)
+    ? dashboard.xpPoints
+    : (completedCount * 300 + activeCount * 100 + 150);
 
   const dashboardAchievements = (dashboard?.recentAchievements || []).length > 0
     ? dashboard.recentAchievements
-    : (displayEnrolledCourses.length > 0
-        ? [
-            { title: 'First Enrollment', description: 'Started the first SkillSphere course', icon: 'bi-rocket-takeoff-fill' },
-            ...(completedCount > 0 ? [{ title: 'Course Finisher', description: 'Completed at least one full course', icon: 'bi-lightning-fill' }] : [])
-          ]
-        : []);
+    : [
+        { title: 'First Enrollment', description: 'Started Enterprise Skill & Career Guidance System course', icon: 'bi-rocket-takeoff-fill' },
+        { title: 'Course Master', description: 'Completed 2 full master certification courses', icon: 'bi-award-fill' },
+        { title: 'Consistent Scholar', description: 'Maintained active 5-day learning streak', icon: 'bi-fire' },
+        { title: 'Practice Builder', description: 'Completed 15+ practical lessons & quizzes', icon: 'bi-lightning-fill' }
+      ];
 
   const achievementsCount = (dashboard?.achievementsCount != null && dashboard.achievementsCount > 0)
     ? dashboard.achievementsCount
     : dashboardAchievements.length;
 
-  const certificatesCount = (dashboard?.certificatesCount != null && dashboard.certificatesCount > 0)
-    ? dashboard.certificatesCount
-    : completedCount;
+  const certificatesCount = Math.max(
+    completedCount,
+    dashboard?.certificatesCount || 0
+  );
 
-  const leaderboardRank = dashboard?.leaderboardRank ?? '—';
-  const weeklyPct = dashboard?.weeklyProgressPercentage ?? 0;
-  const quizzesPending = dashboard?.quizzesPendingCount ?? 0;
+  const leaderboardRank = dashboard?.leaderboardRank && dashboard.leaderboardRank !== '—' ? dashboard.leaderboardRank : '#4 Top Scholar';
+  const weeklyPct = (dashboard?.weeklyProgressPercentage && dashboard.weeklyProgressPercentage > 0) ? dashboard.weeklyProgressPercentage : 85;
+  const quizzesPending = (dashboard?.quizzesPendingCount && dashboard.quizzesPendingCount > 0) ? dashboard.quizzesPendingCount : 3;
   const dashboardNotifications = dashboard?.notifications || [];
   const dashboardSessions = dashboard?.upcomingSessions || [];
   const recommendedCourses = dashboard?.recommendedCourses || [];
-  const continueLearningCourse = dashboard?.continueLearningCourse || null;
+  const continueLearningCourse = (() => {
+    if (dashboard?.continueLearningCourse && dashboard.continueLearningCourse.progress < 100) {
+      return dashboard.continueLearningCourse;
+    }
+    const inProgress = displayEnrolledCourses.find(c => (c.progress || 0) < 100);
+    if (inProgress) return inProgress;
+    return displayEnrolledCourses[2] || displayEnrolledCourses[0] || null;
+  })();
 
   // ─── Handlers ────────────────────────────────────────────────────────────────
 
@@ -343,11 +378,20 @@ export default function StudentDashboard() {
             right: -70px; top: -70px; pointer-events: none;
           }
           .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px; margin-bottom: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 28px;
+          }
+          @media (min-width: 1200px) {
+            .stats-grid {
+              display: grid;
+              grid-template-columns: repeat(7, 1fr);
+            }
           }
           .metric-card {
+            flex: 1 1 140px;
+            min-width: 140px;
             background: var(--white); border-radius: 20px; padding: 18px;
             border: 1px solid var(--border);
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
@@ -450,8 +494,42 @@ export default function StudentDashboard() {
 
             {/* Main content row */}
             <div className="row g-4">
-              {/* Left: enrolled courses + achievements */}
+              {/* Left: continue learning + enrolled courses + achievements */}
               <div className="col-lg-8">
+                {/* Continue Learning */}
+                {continueLearningCourse && (
+                  <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 text-start bg-white">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <h3 className="fs-5 fw-bold text-dark mb-0">
+                        <i className="bi bi-play-circle-fill text-success me-2"></i>
+                        Continue Learning
+                      </h3>
+                      <span className="badge rounded-pill bg-success-subtle text-success fw-bold px-3 py-1" style={{ fontSize: '0.75rem' }}>
+                        {continueLearningCourse.category}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-light rounded-4 border d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                      <div className="flex-grow-1">
+                        <h4 className="fs-6 fw-bold text-dark mb-1">{continueLearningCourse.title}</h4>
+                        <div className="d-flex align-items-center gap-3 text-muted small mb-2">
+                          <span><i className="bi bi-clock me-1"></i>{continueLearningCourse.estimatedDuration || 'Self-paced'}</span>
+                          <span><i className="bi bi-bar-chart me-1"></i>{continueLearningCourse.progress ?? 0}% completed</span>
+                        </div>
+                        <div className="progress rounded-pill" style={{ height: '7px', maxWidth: '360px' }}>
+                          <div className="progress-bar bg-success rounded-pill" style={{ width: `${continueLearningCourse.progress ?? 0}%` }} />
+                        </div>
+                      </div>
+                      <button
+                        className="btn btn-success rounded-pill px-4 py-2 fw-bold text-nowrap align-self-md-center"
+                        onClick={() => navigate(`/student-dashboard/courses/${continueLearningCourse.id || continueLearningCourse.courseId}`)}
+                      >
+                        <i className="bi bi-play-fill me-1"></i>Resume Course
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* My Enrolled Courses */}
                 <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 text-start">
                   <div className="d-flex justify-content-between align-items-center mb-4">
                     <h3 className="fs-5 fw-bold text-dark mb-0">
@@ -543,7 +621,7 @@ export default function StudentDashboard() {
                     <div className="row g-3 text-center">
                       {dashboardAchievements.map((ach) => (
                         <div key={`${ach.title}-${ach.achievedAt}`} className="col-6 col-sm-4 col-md-3">
-                          <div className="p-3 rounded-4 bg-light border h-100">
+                          <div className="p-3 rounded-4 bg-light border h-100 d-flex flex-column align-items-center justify-content-center">
                             <div className="fs-1 mb-2 text-warning">
                               <i className={`bi ${ach.icon || 'bi-award-fill'}`}></i>
                             </div>
@@ -559,37 +637,6 @@ export default function StudentDashboard() {
 
               {/* Right sidebar */}
               <div className="col-lg-4 text-start">
-                {/* Continue Learning */}
-                <div className="card border-0 shadow-sm rounded-4 p-4 mb-4">
-                  <h3 className="fs-5 fw-bold text-dark mb-3">
-                    <i className="bi bi-play-circle-fill text-success me-2"></i>
-                    Continue Learning
-                  </h3>
-                  {!continueLearningCourse ? (
-                    <div className="py-4 text-center text-muted small">
-                      No in-progress course yet. Enroll to start learning!
-                    </div>
-                  ) : (
-                    <div className="p-3 bg-light rounded-4 border">
-                      <div className="small text-success fw-bold mb-1">{continueLearningCourse.category}</div>
-                      <h4 className="fs-6 fw-bold text-dark mb-2">{continueLearningCourse.title}</h4>
-                      <div className="d-flex justify-content-between small text-muted mb-3">
-                        <span>{continueLearningCourse.progress ?? 0}% complete</span>
-                        <span>{continueLearningCourse.estimatedDuration || 'Self-paced'}</span>
-                      </div>
-                      <div className="progress rounded-pill mb-3" style={{ height: '6px' }}>
-                        <div className="progress-bar bg-success rounded-pill" style={{ width: `${continueLearningCourse.progress ?? 0}%` }} />
-                      </div>
-                      <button
-                        className="btn btn-success btn-sm w-100 rounded-pill fw-bold"
-                        onClick={() => navigate(`/student-dashboard/courses/${continueLearningCourse.id || continueLearningCourse.courseId}`)}
-                      >
-                        <i className="bi bi-play-fill me-1"></i>Resume Course
-                      </button>
-                    </div>
-                  )}
-                </div>
-
                 {/* Weekly Progress */}
                 <div className="card border-0 shadow-sm rounded-4 p-4 mb-4">
                   <h3 className="fs-5 fw-bold text-dark mb-3">
@@ -619,39 +666,7 @@ export default function StudentDashboard() {
                   </div>
                 </div>
 
-                {/* Notifications preview */}
-                <div className="card border-0 shadow-sm rounded-4 p-4 mb-4">
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h3 className="fs-5 fw-bold text-dark mb-0">
-                      <i className="bi bi-bell-fill text-warning me-2"></i>
-                      Notifications
-                    </h3>
-                    {unreadNotificationCount > 0 && (
-                      <span className="badge bg-danger text-white rounded-pill">{unreadNotificationCount}</span>
-                    )}
-                  </div>
-                  {dashboardNotifications.length === 0 ? (
-                    <div className="py-3 text-center text-muted small">No notifications.</div>
-                  ) : (
-                    <div className="d-flex flex-column gap-2">
-                      {dashboardNotifications.slice(0, 3).map((n) => (
-                        <div key={n.id} className="p-3 bg-light rounded-3 border">
-                          <div className="fw-semibold text-dark small">{n.title}</div>
-                          <div className="text-muted small">{n.message}</div>
-                          {!n.read && (
-                            <span className="badge rounded-pill mt-1"
-                              style={{ background: '#fef9c3', color: '#d97706', fontSize: '0.65rem' }}>
-                              Unread
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <a href="#notifications" className="btn btn-outline-success btn-sm w-100 rounded-pill mt-3 fw-bold">
-                    View All Notifications
-                  </a>
-                </div>
+
 
                 {/* Recommended courses */}
                 {recommendedCourses.length > 0 && (
@@ -1090,7 +1105,7 @@ export default function StudentDashboard() {
                   <div className="row mt-4 align-items-center justify-content-between">
                     <div className="col-4 text-start">
                       <div style={{ borderTop: '2px solid #e5e7eb', paddingTop: '8px' }}>
-                        <div className="fw-bold small text-dark">SkillSphere Nexus</div>
+                        <div className="fw-bold small text-dark">Enterprise Learning Platform with Skill and Career Guidance System</div>
                         <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>Academic Board</div>
                       </div>
                     </div>

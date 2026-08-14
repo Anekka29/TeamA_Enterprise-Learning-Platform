@@ -341,7 +341,7 @@ export default function DashboardNavbar({ searchPlaceholder = "Search courses, r
           </button>
           
           <Link className="dashboard-navbar-brand text-decoration-none" to={ROUTES.HOME}>
-            <img src={logoImg} alt="SkillSphere Nexus" />
+            <img src={logoImg} alt="Enterprise Learning Platform with Skill and Career Guidance System" style={{ height: '38px', objectFit: 'contain' }} />
           </Link>
         </div>
 
@@ -507,7 +507,7 @@ export default function DashboardNavbar({ searchPlaceholder = "Search courses, r
                     <i className="bi bi-headset fs-4"></i> Raise Support Complaint
                   </h5>
                   <p className="mb-0 text-white-50 extra-small">
-                    Directly submit your issue to SkillSphere Administrators. We review tickets promptly.
+                    Directly submit your issue to Enterprise Learning Platform Administrators. We review tickets promptly.
                   </p>
                 </div>
                 <button 

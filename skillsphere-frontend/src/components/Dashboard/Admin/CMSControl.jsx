@@ -6,7 +6,7 @@ export default function CMSControl({ onShowToast }) {
   const { setThemeMode } = useTheme();
 
   const [settings, setSettings] = useState({
-    platformName: 'SkillSphere Nexus',
+    platformName: 'Enterprise Learning Platform with Skill and Career Guidance System',
     supportEmail: 'support@skillsphere.com',
     logoUrl: '',
     smtpHost: 'smtp.gmail.com',

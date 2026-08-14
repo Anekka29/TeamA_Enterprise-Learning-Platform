@@ -14,5 +14,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Optional<Quiz> findByIdAndCourseId(Long id, Long courseId);
     List<Quiz> findByCourseAndPublishedTrue(Course course);
     long countByCourseMentorIdAndPublishedFalse(Long mentorId);
+    long countByCourseMentorId(Long mentorId);
     long countByCourseId(Long courseId);
 }

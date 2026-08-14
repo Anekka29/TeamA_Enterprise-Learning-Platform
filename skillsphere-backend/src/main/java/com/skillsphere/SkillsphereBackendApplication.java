@@ -21,9 +21,8 @@ public class SkillsphereBackendApplication {
 				jdbcTemplate.execute("ALTER TABLE users MODIFY COLUMN department VARCHAR(255) NULL");
 				jdbcTemplate.execute("ALTER TABLE users MODIFY COLUMN year VARCHAR(255) NULL");
 				jdbcTemplate.execute("ALTER TABLE users MODIFY COLUMN phoneNumber VARCHAR(255) NULL");
-				System.out.println("Successfully altered users table columns to allow nulls");
 			} catch (Exception e) {
-				System.out.println("Columns might already be nullable: " + e.getMessage());
+				// Nullable column check ignored
 			}
 		};
 	}

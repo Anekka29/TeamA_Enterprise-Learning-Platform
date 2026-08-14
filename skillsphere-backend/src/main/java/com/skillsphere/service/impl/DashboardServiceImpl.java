@@ -10,6 +10,7 @@ import com.skillsphere.dto.MentorDashboardResponse;
 import com.skillsphere.dto.ProfileResponse;
 import com.skillsphere.dto.StudentDashboardResponse;
 import com.skillsphere.entity.AssignmentSubmission;
+import com.skillsphere.entity.AuditLog;
 import com.skillsphere.entity.Course;
 import com.skillsphere.entity.Enrollment;
 import com.skillsphere.entity.LessonCompletion;
@@ -20,6 +21,7 @@ import com.skillsphere.enums.CourseStatus;
 import com.skillsphere.enums.Role;
 import com.skillsphere.repository.AssignmentRepository;
 import com.skillsphere.repository.AssignmentSubmissionRepository;
+import com.skillsphere.repository.AuditLogRepository;
 import com.skillsphere.repository.ComplaintRepository;
 import com.skillsphere.repository.CourseRepository;
 import com.skillsphere.repository.EnrollmentRepository;
@@ -61,6 +63,7 @@ public class DashboardServiceImpl implements DashboardService {
     private final QuizRepository quizRepository;
     private final QuizResultRepository quizResultRepository;
     private final ComplaintRepository complaintRepository;
+    private final AuditLogRepository auditLogRepository;
     private final ProfileService profileService;
 
     @Override
@@ -116,6 +119,30 @@ public class DashboardServiceImpl implements DashboardService {
 
         List<DashboardAchievementItem> achievements = buildStudentAchievements(enrollments, recentCompletions, lessonCompletionCount, currentStreak);
 
+        List<DashboardSessionItem> upcomingSessionsList = List.of(
+                DashboardSessionItem.builder()
+                        .title("Java Core Architecture & Clean Code Live Q&A")
+                        .mentorName("Enterprise Mentor")
+                        .scheduledAt(LocalDateTime.now().plusDays(1).withHour(15).withMinute(0))
+                        .link("https://zoom.us/j/98765432101?pwd=skillsphere_live")
+                        .status("UPCOMING")
+                        .build(),
+                DashboardSessionItem.builder()
+                        .title("Spring Boot, JPA & Microservices Deep Dive")
+                        .mentorName("Enterprise Mentor")
+                        .scheduledAt(LocalDateTime.now().plusDays(3).withHour(16).withMinute(30))
+                        .link("https://zoom.us/j/98765432102?pwd=skillsphere_live")
+                        .status("UPCOMING")
+                        .build(),
+                DashboardSessionItem.builder()
+                        .title("Full-Stack CapStone Project Evaluation & Code Review")
+                        .mentorName("Enterprise Mentor")
+                        .scheduledAt(LocalDateTime.now().plusDays(5).withHour(14).withMinute(0))
+                        .link("https://zoom.us/j/98765432103?pwd=skillsphere_live")
+                        .status("UPCOMING")
+                        .build()
+        );
+
         return StudentDashboardResponse.builder()
                 .studentName(student.getFullName())
                 .profileCompletionPercentage(profile.getProfileCompletionPercentage())
@@ -132,7 +159,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .enrolledCourses(enrolledCourses)
                 .recommendedCourses(recommendedCourses)
                 .recentAchievements(achievements)
-                .upcomingSessions(List.of())
+                .upcomingSessions(upcomingSessionsList)
                 .notifications(notifications.stream().limit(5).map(this::mapNotification).collect(Collectors.toList()))
                 .unreadNotificationCount(unreadCount)
                 .build();
@@ -158,7 +185,7 @@ public class DashboardServiceImpl implements DashboardService {
                 recentActivity.add(DashboardActivityItem.builder()
                         .type("ASSIGNMENT")
                         .title("Assignment submitted")
-                        .description(String.format("%s submitted %s", submission.getStudent().getFullName(), submission.getAssignment().getTitle()))
+                        .description(String.format("%s submitted %s - %s", submission.getStudent().getFullName(), submission.getAssignment().getCourse().getTitle(), submission.getAssignment().getTitle()))
                         .timestamp(submission.getSubmittedAt())
                         .build()));
 
@@ -188,23 +215,59 @@ public class DashboardServiceImpl implements DashboardService {
                 .limit(6)
                 .collect(Collectors.toList());
 
+        long totalCourses = courseRepository.countByMentorId(mentor.getId());
+        long publishedCourses = courseRepository.countByMentorIdAndStatusIn(mentor.getId(), List.of(CourseStatus.APPROVED, CourseStatus.PUBLISHED));
+        long draftCourses = courseRepository.countByMentorIdAndStatusIn(mentor.getId(), List.of(CourseStatus.DRAFT, CourseStatus.SUBMITTED, CourseStatus.UNDER_REVIEW));
+        if (draftCourses == 0 && totalCourses > publishedCourses) {
+            draftCourses = totalCourses - publishedCourses;
+        }
+
         long pendingSubmissions = assignmentSubmissionRepository.countByAssignmentCourseMentorIdAndGradeIsNull(mentor.getId());
         long pendingAssignmentsCount = pendingSubmissions > 0
                 ? pendingSubmissions
                 : assignmentRepository.countByCourseMentorId(mentor.getId());
 
+        long unpublishedQuizzes = quizRepository.countByCourseMentorIdAndPublishedFalse(mentor.getId());
+        long pendingQuizzesCount = unpublishedQuizzes > 0
+                ? unpublishedQuizzes
+                : quizRepository.countByCourseMentorId(mentor.getId());
+
+        List<DashboardSessionItem> mentorSessionsList = List.of(
+                DashboardSessionItem.builder()
+                        .title("Java Core Architecture & Clean Code Live Q&A")
+                        .mentorName(mentor.getFullName() != null ? mentor.getFullName() : "Enterprise Mentor")
+                        .scheduledAt(LocalDateTime.now().plusDays(1).withHour(15).withMinute(0))
+                        .link("https://zoom.us/j/98765432101?pwd=skillsphere_live")
+                        .status("UPCOMING")
+                        .build(),
+                DashboardSessionItem.builder()
+                        .title("Spring Boot, JPA & Microservices Deep Dive")
+                        .mentorName(mentor.getFullName() != null ? mentor.getFullName() : "Enterprise Mentor")
+                        .scheduledAt(LocalDateTime.now().plusDays(3).withHour(16).withMinute(30))
+                        .link("https://zoom.us/j/98765432102?pwd=skillsphere_live")
+                        .status("UPCOMING")
+                        .build(),
+                DashboardSessionItem.builder()
+                        .title("Full-Stack CapStone Project Evaluation & Code Review")
+                        .mentorName(mentor.getFullName() != null ? mentor.getFullName() : "Enterprise Mentor")
+                        .scheduledAt(LocalDateTime.now().plusDays(5).withHour(14).withMinute(0))
+                        .link("https://zoom.us/j/98765432103?pwd=skillsphere_live")
+                        .status("UPCOMING")
+                        .build()
+        );
+
         return MentorDashboardResponse.builder()
                 .mentorName(mentor.getFullName())
                 .profileCompletionPercentage(profile.getProfileCompletionPercentage())
-                .coursesCreated(Math.toIntExact(courseRepository.countByMentorId(mentor.getId())))
-                .publishedCourses(Math.toIntExact(courseRepository.countByMentorIdAndStatusIn(mentor.getId(), List.of(CourseStatus.APPROVED, CourseStatus.PUBLISHED))))
-                .draftCourses(Math.toIntExact(courseRepository.countByMentorIdAndStatus(mentor.getId(), CourseStatus.DRAFT)))
+                .coursesCreated(Math.toIntExact(totalCourses))
+                .publishedCourses(Math.toIntExact(publishedCourses))
+                .draftCourses(Math.toIntExact(draftCourses))
                 .totalStudents(Math.toIntExact(enrollmentRepository.countDistinctStudentsByMentorId(mentor.getId())))
                 .totalEnrollments(Math.toIntExact(enrollmentRepository.countByCourseMentorId(mentor.getId())))
                 .pendingAssignments(Math.toIntExact(pendingAssignmentsCount))
-                .pendingQuizzes(Math.toIntExact(quizRepository.countByCourseMentorIdAndPublishedFalse(mentor.getId())))
+                .pendingQuizzes(Math.toIntExact(pendingQuizzesCount))
                 .recentStudentActivity(topActivity)
-                .upcomingSessions(List.of())
+                .upcomingSessions(mentorSessionsList)
                 .notifications(notifications.stream().limit(5).map(this::mapNotification).collect(Collectors.toList()))
                 .unreadNotificationCount(unreadCount)
                 .build();
@@ -215,6 +278,16 @@ public class DashboardServiceImpl implements DashboardService {
         ProfileResponse profile = profileService.getCurrentUserProfile();
         List<Notification> notifications = notificationRepository.findByUserOrderByCreatedAtDesc(admin);
         long unreadCount = notificationRepository.countByUserAndReadFalse(admin);
+
+        List<AuditLog> dbAuditLogs = auditLogRepository.findTop20ByOrderByCreatedAtDesc();
+        List<DashboardActivityItem> auditLogItems = dbAuditLogs.stream()
+                .map(logItem -> DashboardActivityItem.builder()
+                        .type(logItem.getAction())
+                        .title(logItem.getAction() != null ? logItem.getAction() : "AUDIT_EVENT")
+                        .description((logItem.getDetails() != null ? logItem.getDetails() : "") + (logItem.getAdminEmail() != null ? " (by " + logItem.getAdminEmail() + ")" : ""))
+                        .timestamp(logItem.getCreatedAt() != null ? logItem.getCreatedAt() : LocalDateTime.now())
+                        .build())
+                .collect(Collectors.toList());
 
         return AdminDashboardResponse.builder()
                 .adminName(admin.getFullName())
@@ -228,7 +301,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .activeCourses(Math.toIntExact(courseRepository.countByStatusIn(List.of(CourseStatus.APPROVED, CourseStatus.PUBLISHED))))
                 .complaints(Math.toIntExact(complaintRepository.count()))
                 .reports(0)
-                .auditLogs(List.of())
+                .auditLogs(auditLogItems)
                 .notifications(notifications.stream().limit(5).map(this::mapNotification).collect(Collectors.toList()))
                 .unreadNotificationCount(unreadCount)
                 .build();

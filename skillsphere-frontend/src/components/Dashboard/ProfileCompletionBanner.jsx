@@ -61,7 +61,7 @@ export default function ProfileCompletionBanner() {
             <h5 className="fw-bold text-dark mb-2">Complete your profile</h5>
             <p className="text-muted mb-3 small">
               Your profile is <strong>{profileCompletionPercentage}%</strong> complete. 
-              Complete your information to personalize your SkillSphere experience.
+              Complete your information to personalize your Enterprise Learning Platform experience.
             </p>
             <Link 
               to={ROUTES.EDIT_PROFILE} 

@@ -316,7 +316,7 @@ export default function MentorInternships({ onShowToast }) {
                 <h6 className="fw-bold text-dark mb-2"><i className="bi bi-link-45deg text-success me-1"></i>Verified Profiles & Resume</h6>
                 <div className="d-flex flex-wrap gap-2 mb-4">
                   <span className="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 small fw-bold">
-                    <i className="bi bi-file-earmark-person me-1"></i> {selectedDossierApp.resumeUrl || 'SkillSphere ATS Resume Sync'}
+                    <i className="bi bi-file-earmark-person me-1"></i> {selectedDossierApp.resumeUrl || 'Enterprise Learning Platform ATS Resume Sync'}
                   </span>
 
                   {selectedDossierApp.linkedInUrl && (

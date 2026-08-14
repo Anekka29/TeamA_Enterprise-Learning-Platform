@@ -17,7 +17,7 @@ export default function AIAssistant() {
   const [messages, setMessages] = useState([
     { 
       sender: 'ai', 
-      text: 'Hello! I am your **SkillSphere AI Agent (ChatGPT Powered)**. Ask me anything — from complex programming, code debugging, and software architecture to General Knowledge (GK), science, mathematics, history, writing, and career planning!', 
+      text: 'Hello! I am your **Enterprise Learning Platform AI Agent (ChatGPT Powered)**. Ask me anything — from complex programming, code debugging, and software architecture to General Knowledge (GK), science, mathematics, history, writing, and career planning!', 
       time: 'Just now' 
     }
   ]);
@@ -189,7 +189,7 @@ export default function AIAssistant() {
     <div className="fade-in-quick text-start">
       <div className="mb-4">
         <div className="d-flex align-items-center gap-2 mb-1">
-          <h2 className="fw-bold text-dark mb-0">SkillSphere AI Agent</h2>
+          <h2 className="fw-bold text-dark mb-0">Enterprise Learning Platform AI Agent</h2>
           <span className="badge bg-primary rounded-pill px-3 py-1 fs-6">ChatGPT Powered</span>
         </div>
         <p className="text-muted mb-0">Your universal AI assistant for coding, general knowledge, science, math, career, and general inquiries.</p>
@@ -205,7 +205,7 @@ export default function AIAssistant() {
                   <i className="bi bi-robot fs-5"></i>
                 </div>
                 <div>
-                  <h5 className="fw-bold text-dark mb-0">SkillSphere AI Agent</h5>
+                  <h5 className="fw-bold text-dark mb-0">Enterprise Learning Platform AI Agent</h5>
                   <span className="badge bg-success-subtle text-success" style={{ fontSize: '0.65rem' }}>Online & Multi-Field Ready</span>
                 </div>
               </div>
@@ -214,7 +214,7 @@ export default function AIAssistant() {
                 onClick={() => {
                   setMessages([{ 
                     sender: 'ai', 
-                    text: 'Hello! I am your **SkillSphere AI Agent (ChatGPT Powered)**. Ask me anything — from complex programming, code debugging, and software architecture to General Knowledge (GK), science, mathematics, history, writing, and career planning!', 
+                    text: 'Hello! I am your **Enterprise Learning Platform AI Agent (ChatGPT Powered)**. Ask me anything — from complex programming, code debugging, and software architecture to General Knowledge (GK), science, mathematics, history, writing, and career planning!', 
                     time: 'Just now' 
                   }]);
                   setConversationId(null);
@@ -230,7 +230,7 @@ export default function AIAssistant() {
               {messages.map((m, i) => (
                 <div key={i} className={`p-3 rounded-4 msg-bubble ${m.sender === 'user' ? 'msg-student' : 'msg-mentor align-self-start'}`} style={{ maxWidth: '85%' }}>
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="small fw-bold opacity-75">{m.sender === 'user' ? 'You' : 'SkillSphere AI Agent'}</span>
+                    <span className="small fw-bold opacity-75">{m.sender === 'user' ? 'You' : 'Enterprise Learning Platform AI Agent'}</span>
                   </div>
                   <div style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>
                     {m.sender === 'ai' ? (

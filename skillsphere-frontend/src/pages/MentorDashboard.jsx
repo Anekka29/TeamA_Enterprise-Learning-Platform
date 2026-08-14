@@ -89,7 +89,29 @@ export default function MentorDashboard() {
 
   const notifications = dashboard?.notifications || [];
   const recentActivity = dashboard?.recentStudentActivity || [];
-  const upcomingSessions = dashboard?.upcomingSessions || [];
+  const getUpcomingSessions = () => {
+    let sessions = dashboard?.upcomingSessions || [];
+    try {
+      const stored = localStorage.getItem('skillsphere_global_live_sessions');
+      if (stored) {
+        const local = JSON.parse(stored);
+        if (Array.isArray(local) && local.length > 0) {
+          const formattedLocal = local.map(s => ({
+            id: s.id,
+            title: s.topic ? `${s.courseTitle || 'Course'}: ${s.topic}` : s.title,
+            mentorName: s.mentorName || 'Mentor',
+            scheduledAt: s.date ? `${s.date} ${s.timeWindow || ''}` : s.scheduledAt,
+            link: s.zoomLink || s.link,
+            status: s.status || 'UPCOMING'
+          }));
+          sessions = [...formattedLocal, ...sessions];
+        }
+      }
+    } catch (e) {}
+    return sessions;
+  };
+
+  const upcomingSessionsList = getUpcomingSessions();
 
   const getPendingAssignmentsCount = () => {
     try {
@@ -108,6 +130,35 @@ export default function MentorDashboard() {
       console.warn('Error computing pending assignments count', e);
     }
     return dashboard?.pendingAssignments ?? 0;
+  };
+
+  const getPendingQuizzesCount = () => {
+    if (dashboard?.pendingQuizzes !== undefined && dashboard.pendingQuizzes > 0) {
+      return dashboard.pendingQuizzes;
+    }
+    try {
+      const stored = localStorage.getItem('skillsphere_global_quizzes');
+      if (stored) {
+        const quizzes = JSON.parse(stored);
+        if (quizzes.length > 0) return quizzes.length;
+      }
+    } catch (e) {}
+    return dashboard?.pendingQuizzes ?? 0;
+  };
+
+  const getDraftCoursesCount = () => {
+    if (dashboard?.draftCourses !== undefined && dashboard.draftCourses > 0) {
+      return dashboard.draftCourses;
+    }
+    try {
+      const stored = localStorage.getItem('skillsphere_global_courses');
+      if (stored) {
+        const courses = JSON.parse(stored);
+        const drafts = courses.filter(c => c.status === 'DRAFT' || c.status === 'SUBMITTED' || c.status === 'UNDER_REVIEW');
+        if (drafts.length > 0) return drafts.length;
+      }
+    } catch (e) {}
+    return dashboard?.draftCourses ?? 0;
   };
 
   return (
@@ -155,9 +206,9 @@ export default function MentorDashboard() {
                 { title: 'Total Students', value: dashboard?.totalStudents ?? 0, icon: 'bi-people-fill', color: 'text-success', bg: 'rgba(16,185,129,0.1)', col: 'col-md-6 col-xl-3' },
                 { title: 'Courses Created', value: dashboard?.coursesCreated ?? 0, icon: 'bi-journal-bookmark-fill', color: 'text-primary', bg: 'rgba(59,130,246,0.1)', col: 'col-md-6 col-xl-3' },
                 { title: 'Pending Assignments', value: getPendingAssignmentsCount(), icon: 'bi-file-earmark-text-fill', color: 'text-warning', bg: 'rgba(245,158,11,0.1)', col: 'col-md-6 col-xl-3' },
-                { title: 'Pending Quizzes', value: dashboard?.pendingQuizzes ?? 0, icon: 'bi-patch-question-fill', color: 'text-danger', bg: 'rgba(239,68,68,0.1)', col: 'col-md-6 col-xl-3' },
+                { title: 'Pending Quizzes', value: getPendingQuizzesCount(), icon: 'bi-patch-question-fill', color: 'text-danger', bg: 'rgba(239,68,68,0.1)', col: 'col-md-6 col-xl-3' },
                 { title: 'Published Courses', value: dashboard?.publishedCourses ?? 0, icon: 'bi-globe2', color: 'text-success', bg: 'rgba(16,185,129,0.1)', col: 'col-md-4' },
-                { title: 'Draft Courses', value: dashboard?.draftCourses ?? 0, icon: 'bi-file-earmark-fill', color: 'text-secondary', bg: 'rgba(100,116,139,0.1)', col: 'col-md-4' },
+                { title: 'Draft Courses', value: getDraftCoursesCount(), icon: 'bi-file-earmark-fill', color: 'text-secondary', bg: 'rgba(100,116,139,0.1)', col: 'col-md-4' },
                 { title: 'Total Enrollments', value: dashboard?.totalEnrollments ?? 0, icon: 'bi-collection-fill', color: 'text-info', bg: 'rgba(6,182,212,0.1)', col: 'col-md-4' },
               ].map((kpi) => (
                 <div key={kpi.title} className={kpi.col}>
@@ -220,14 +271,30 @@ export default function MentorDashboard() {
                 </div>
 
                 <div className="card border-0 shadow-sm rounded-4 p-4 bg-white border">
-                  <h5 className="fw-bold text-dark mb-3">Upcoming Sessions</h5>
-                  {upcomingSessions.length === 0 ? (
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h5 className="fw-bold text-dark mb-0">Upcoming Sessions</h5>
+                    <a href="#sessions" className="btn btn-xs btn-outline-success rounded-pill fw-bold" style={{ fontSize: '0.72rem' }}>
+                      <i className="bi bi-calendar-plus me-1"></i>Schedule New
+                    </a>
+                  </div>
+                  {upcomingSessionsList.length === 0 ? (
                     <div className="text-center py-4 text-muted small">No upcoming mentor sessions are scheduled yet.</div>
                   ) : (
-                    upcomingSessions.map((session) => (
-                      <div key={`${session.title}-${session.scheduledAt}`} className="p-3 bg-light rounded-4 border mb-2">
-                        <div className="fw-semibold text-dark small">{session.title}</div>
-                        <div className="text-muted small">{session.scheduledAt ? new Date(session.scheduledAt).toLocaleString() : 'To be scheduled'}</div>
+                    upcomingSessionsList.map((session, idx) => (
+                      <div key={session.id || `sess_${idx}`} className="p-3 bg-light rounded-4 border mb-2 text-start">
+                        <div className="d-flex justify-content-between align-items-start gap-2 mb-1">
+                          <span className="fw-bold text-dark small">{session.title}</span>
+                          <span className="badge bg-success-subtle text-success rounded-pill" style={{ fontSize: '0.65rem' }}>{session.status || 'UPCOMING'}</span>
+                        </div>
+                        <div className="text-muted extra-small mb-2">
+                          <i className="bi bi-clock me-1 text-success"></i>
+                          {session.scheduledAt ? (typeof session.scheduledAt === 'string' && session.scheduledAt.includes('T') ? new Date(session.scheduledAt).toLocaleString() : session.scheduledAt) : 'Scheduled'}
+                        </div>
+                        {session.link && (
+                          <a href={session.link} target="_blank" rel="noreferrer" className="btn btn-xs btn-success rounded-pill text-white fw-bold px-3 py-1 d-inline-block" style={{ fontSize: '0.7rem' }}>
+                            <i className="bi bi-camera-video-fill me-1"></i>Join Zoom Live Session
+                          </a>
+                        )}
                       </div>
                     ))
                   )}

@@ -1160,7 +1160,7 @@ export default function EditProfile() {
                     name="organization"
                     value={formData.organization || ''}
                     onChange={handleInputChange}
-                    placeholder="e.g. SkillSphere Nexus"
+                    placeholder="e.g. Enterprise Learning Platform with Skill and Career Guidance System"
                   />
                 </div>
                 <div className="col-md-6">

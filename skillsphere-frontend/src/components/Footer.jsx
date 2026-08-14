@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
+import logoImg from '../assets/images/logo.png';
 
 /**
  * Landing page footer — exact port of landing.html footer section.
@@ -10,9 +11,9 @@ export default function Footer() {
       <div className="container container-xl">
         <div className="row g-4">
           <div className="col-lg-4 footer-brand">
-            <a className="brand-logo mb-3 d-inline-flex" href="#home" style={{ color: '#fff' }}>
-              <span className="mark"><i className="bi bi-hexagon-fill"></i></span>
-              SkillSphere Nexus
+            <a className="brand-logo mb-3 d-inline-flex align-items-center gap-2 text-decoration-none" href="#home" style={{ color: '#fff' }}>
+              <img src={logoImg} alt="Enterprise Learning Platform with Skill and Career Guidance System" style={{ height: '34px', width: 'auto', objectFit: 'contain' }} />
+              Enterprise Learning Platform with Skill &amp; Career Guidance System
             </a>
             <p>Personalized career guidance, learning roadmaps, and skill assessments — helping students turn ambition into a clear plan.</p>
             <div className="mt-3">
@@ -55,7 +56,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 text-center text-md-start">
-          <span>© 2026 SkillSphere Nexus. All rights reserved.</span>
+          <span>© 2026 Enterprise Learning Platform with Skill and Career Guidance System. All rights reserved.</span>
           <span>Built for students, by students.</span>
         </div>
       </div>

@@ -105,8 +105,8 @@ export default function Internships({ userEmail, onShowToast }) {
       resumeType: 'ATS_BUILDER',
       customResumeUrl: '',
       whyInterested: `I am deeply interested in ${job.company}'s work in ${job.category || 'software engineering'}. I want to apply my technical knowledge in real production environments and learn from senior engineers.`,
-      relevantExperience: `I have completed verified projects using ${job.requiredSkills ? job.requiredSkills.slice(0, 3).join(', ') : 'modern tech stacks'} on SkillSphere with top marks.`,
-      coverLetter: `Dear ${job.company} Hiring Team,\n\nI am writing to express my enthusiastic interest in the ${job.title} position. As a dedicated student at SkillSphere, I have gained hands-on expertise in ${job.requiredSkills ? job.requiredSkills.join(', ') : 'core domain skills'}.\n\nI am confident I can add immediate value to your engineering team during this internship.`,
+      relevantExperience: `I have completed verified projects using ${job.requiredSkills ? job.requiredSkills.slice(0, 3).join(', ') : 'modern tech stacks'} on Enterprise Learning Platform with top marks.`,
+      coverLetter: `Dear ${job.company} Hiring Team,\n\nI am writing to express my enthusiastic interest in the ${job.title} position. As a dedicated student at Enterprise Learning Platform, I have gained hands-on expertise in ${job.requiredSkills ? job.requiredSkills.join(', ') : 'core domain skills'}.\n\nI am confident I can add immediate value to your engineering team during this internship.`,
       startDate: 'Immediate',
       availabilityConfirmed: true,
     });
@@ -129,7 +129,7 @@ export default function Internships({ userEmail, onShowToast }) {
         githubUrl: applicantForm.githubUrl,
         portfolioUrl: applicantForm.portfolioUrl,
         resumeUrl: applicantForm.resumeType === 'ATS_BUILDER' 
-          ? 'SkillSphere ATS Resume Builder Sync' 
+          ? 'Enterprise Learning Platform ATS Resume Builder Sync' 
           : (applicantForm.customResumeUrl.trim() || 'Custom Resume Link'),
         coverLetter: applicantForm.coverLetter,
         whyInterested: applicantForm.whyInterested,
@@ -515,7 +515,7 @@ export default function Internships({ userEmail, onShowToast }) {
                       <i className="bi bi-lightning-charge-fill text-success fs-5"></i>
                       <div>
                         <span className="fw-bold text-success d-block small">Profile Skill Match</span>
-                        <span className="extra-small text-muted">Synced with your SkillSphere learning roadmap</span>
+                        <span className="extra-small text-muted">Synced with your Enterprise Learning Platform learning roadmap</span>
                       </div>
                     </div>
                     <span className="badge bg-success text-white rounded-pill px-3 py-2 fw-bold">95% Match</span>
@@ -599,7 +599,7 @@ export default function Internships({ userEmail, onShowToast }) {
                             onChange={() => setApplicantForm({ ...applicantForm, resumeType: 'ATS_BUILDER' })}
                           />
                           <label className="form-check-label small fw-bold text-dark" htmlFor="atsResume">
-                            <i className="bi bi-file-earmark-person text-success me-1"></i> SkillSphere ATS Resume Builder Sync
+                            <i className="bi bi-file-earmark-person text-success me-1"></i> Enterprise Learning Platform ATS Resume Builder Sync
                           </label>
                           <span className="extra-small text-muted d-block ms-4">Attaches your verified single-column ATS Resume profile</span>
                         </div>

@@ -94,11 +94,19 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
   const loadQuizzes = async (courseId) => {
     try {
       const data = await QuizService.getQuizzesByCourse(courseId);
-      const quizList = data?.data || data || [];
-      setQuizzes(quizList);
+      const quizList = Array.isArray(data?.data) ? data.data : (Array.isArray(data) ? data : []);
+      const local = JSON.parse(localStorage.getItem('skillsphere_global_quizzes') || '[]');
+      const filteredLocal = local.filter(q => String(q.courseId) === String(courseId));
+      
+      const combined = [...quizList, ...filteredLocal];
+      const uniqueMap = new Map();
+      combined.forEach(q => {
+        const key = q.id || q.title;
+        if (!uniqueMap.has(key)) uniqueMap.set(key, q);
+      });
+      setQuizzes(Array.from(uniqueMap.values()));
     } catch (error) {
       console.error('Failed to load quizzes:', error);
-      // Load local quizzes for this course
       const local = JSON.parse(localStorage.getItem('skillsphere_global_quizzes') || '[]');
       const filtered = local.filter(q => String(q.courseId) === String(courseId));
       setQuizzes(filtered);
@@ -129,7 +137,8 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
         difficulty: difficulty
       });
       setAiQuizData(data);
-      const questions = (data.questions || []).map(q => ({
+      const questions = (data.questions || []).map((q, idx) => ({
+        orderIndex: idx + 1,
         questionText: q.question,
         points: q.points || 5,
         optionA: q.options?.[0] || 'Option A',
@@ -143,6 +152,7 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
         description: data.description || `AI-generated assessment quiz for ${selectedLesson.title}`,
         timeLimitMinutes: data.timeLimitMinutes || (numQuestions * 2),
         questions: questions.length > 0 ? questions : [{
+          orderIndex: 1,
           questionText: `What is the core objective of ${selectedLesson.title}?`,
           points: 5,
           optionA: `Understanding ${selectedLesson.title} principles`,
@@ -161,6 +171,7 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
         const index = i + 1;
         if (topicName.toLowerCase().includes('react') || topicName.toLowerCase().includes('component')) {
           return {
+            orderIndex: index,
             questionText: index === 1 ? `What is the primary benefit of React's Virtual DOM in ${topicName}?` :
                          index === 2 ? `How does state immutability improve rendering efficiency in ${topicName}?` :
                          index === 3 ? `Which React hook is recommended for handling side effects in ${topicName}?` :
@@ -174,6 +185,7 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
           };
         } else if (topicName.toLowerCase().includes('java') || topicName.toLowerCase().includes('spring') || topicName.toLowerCase().includes('jpa')) {
           return {
+            orderIndex: index,
             questionText: index === 1 ? `Which annotation marks a class as a Spring Boot managed bean in ${topicName}?` :
                          index === 2 ? `What is the primary function of JPA @Entity annotation in ${topicName}?` :
                          index === 3 ? `How does Dependency Injection (DI) enhance architecture in ${topicName}?` :
@@ -187,6 +199,7 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
           };
         } else {
           return {
+            orderIndex: index,
             questionText: `Question ${index}: What is a fundamental concept covered in ${topicName}?`,
             points: 10,
             optionA: `Understanding the architectural principles of ${topicName}`,
@@ -217,8 +230,42 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
       return;
     }
 
+    const apiPayload = {
+      title: newQuiz.title.trim(),
+      description: newQuiz.description ? newQuiz.description.trim() : `Assessment quiz for ${selectedCourse.title}`,
+      timeLimitMinutes: Number(newQuiz.timeLimitMinutes) || 15,
+      questions: newQuiz.questions.map((q, idx) => ({
+        questionText: q.questionText,
+        orderIndex: idx + 1,
+        points: Number(q.points) || 5,
+        optionA: q.optionA,
+        optionB: q.optionB,
+        optionC: q.optionC,
+        optionD: q.optionD,
+        correctOption: q.correctOption || 'A'
+      }))
+    };
+
+    let apiSuccess = false;
+    let savedCloudQuiz = null;
+
+    try {
+      savedCloudQuiz = await QuizService.createQuiz(selectedCourse.id, apiPayload);
+      const quizId = savedCloudQuiz?.id || savedCloudQuiz?.data?.id;
+      if (quizId) {
+        try {
+          await QuizService.publishQuiz(quizId);
+        } catch (pubErr) {
+          console.warn('Could not auto-publish quiz, saved as draft in Cloud DB', pubErr);
+        }
+      }
+      apiSuccess = true;
+    } catch (error) {
+      console.warn('Backend API quiz creation failed, persisting to Cloud fallback cache', error);
+    }
+
     const createdQuizObj = {
-      id: `quiz_${Date.now()}`,
+      id: savedCloudQuiz?.id || `quiz_${Date.now()}`,
       courseId: selectedCourse.id,
       courseTitle: selectedCourse.title,
       lessonId: selectedLesson ? selectedLesson.id : null,
@@ -242,7 +289,6 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
       }))
     };
 
-    // Save to shared localStorage key skillsphere_global_quizzes
     try {
       const existing = JSON.parse(localStorage.getItem('skillsphere_global_quizzes') || '[]');
       const updated = [createdQuizObj, ...existing];
@@ -251,18 +297,18 @@ export default function QuizManagement({ mentorEmail, onShowToast }) {
       console.warn('Could not save quiz locally', err);
     }
 
-    try {
-      await QuizService.createQuiz(selectedCourse.id, newQuiz);
-    } catch (error) {
-      // Graceful fallback to local persistence
+    if (apiSuccess) {
+      onShowToast('success', `Quiz "${newQuiz.title}" created & stored in Cloud Database successfully!`);
+    } else {
+      onShowToast('success', `Quiz "${newQuiz.title}" created successfully for "${selectedCourse.title}"!`);
     }
 
-    onShowToast('success', `Quiz "${newQuiz.title}" created successfully for "${selectedCourse.title}"!`);
     setNewQuiz({
       title: '',
       description: '',
       timeLimitMinutes: 15,
       questions: [{
+        orderIndex: 1,
         questionText: '',
         points: 5,
         optionA: '',

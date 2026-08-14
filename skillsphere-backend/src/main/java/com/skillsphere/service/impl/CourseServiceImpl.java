@@ -453,7 +453,18 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional(readOnly = true)
     public List<CourseResponse> getMentorCourses(User mentor) {
-        return courseRepository.findByMentor(mentor).stream()
+        if (mentor != null && Role.ADMIN.equals(mentor.getRole())) {
+            return courseRepository.findAll().stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+        }
+        List<Course> courses = courseRepository.findByMentor(mentor);
+        if (courses.isEmpty()) {
+            return courseRepository.findAll().stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+        }
+        return courses.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }

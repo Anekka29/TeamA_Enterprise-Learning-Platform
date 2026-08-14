@@ -328,7 +328,7 @@ export default function LoginPage() {
           </form>
 
           <p className="auth-footer-note">
-            By continuing, you agree to SkillSphere Nexus's Terms of Service and Privacy Policy.
+            By continuing, you agree to Enterprise Learning Platform with Skill and Career Guidance System's Terms of Service and Privacy Policy.
           </p>
         </div>
       </div>

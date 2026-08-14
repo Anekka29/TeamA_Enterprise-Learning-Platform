@@ -657,7 +657,7 @@ export default function CoursePlayer({ course, enrollment, onBack, onShowToast }
               <div className="mb-3">
                 <img
                   src={courseBadgeImg}
-                  alt="SkillSphere Nexus Course Completed Badge"
+                  alt="Enterprise Learning Platform with Skill and Career Guidance System Course Completed Badge"
                   style={{
                     width: '140px',
                     height: '140px',
@@ -680,7 +680,7 @@ export default function CoursePlayer({ course, enrollment, onBack, onShowToast }
             <div className="d-flex justify-content-center gap-2 flex-wrap">
               <a
                 href={courseBadgeImg}
-                download="SkillSphere_Course_Completed_Badge.jpg"
+                download="Enterprise Learning Platform_Course_Completed_Badge.jpg"
                 className="btn btn-outline-success rounded-pill px-4 fw-bold"
               >
                 <i className="bi bi-download me-1"></i> Save Badge

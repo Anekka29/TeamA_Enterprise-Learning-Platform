@@ -115,14 +115,14 @@ export function generateDynamicAISvg(title = '', category = 'Programming', isBan
   };
 
   const topicThemes = {
-    JAVA: { bg1: '#064e3b', bg2: '#022c22', accent: '#10b981', glow: '#34d399', badgeBg: '#059669', codeSnippet: 'public class JavaCourse {\n  public static void main(String[] args) {\n    System.out.println("SkillSphere Java");\n  }\n}' },
+    JAVA: { bg1: '#064e3b', bg2: '#022c22', accent: '#10b981', glow: '#34d399', badgeBg: '#059669', codeSnippet: 'public class JavaCourse {\n  public static void main(String[] args) {\n    System.out.println("Enterprise Learning Platform Java");\n  }\n}' },
     PYTHON_AI: { bg1: '#31103f', bg2: '#0f051d', accent: '#c084fc', glow: '#f472b6', badgeBg: '#9333ea', codeSnippet: 'import torch\nimport numpy as np\nmodel = NeuralNetwork(layers=128)\nprint("AI Model Trained 100%")' },
-    REACT_WEB: { bg1: '#0f172a', bg2: '#0284c7', accent: '#38bdf8', glow: '#818cf8', badgeBg: '#0284c7', codeSnippet: 'import React from "react";\nexport default function App() {\n  return <SkillSphereCatalog />;\n}' },
+    REACT_WEB: { bg1: '#0f172a', bg2: '#0284c7', accent: '#38bdf8', glow: '#818cf8', badgeBg: '#0284c7', codeSnippet: 'import React from "react";\nexport default function App() {\n  return <Enterprise Learning PlatformCatalog />;\n}' },
     CYBER_SECURITY: { bg1: '#451a03', bg2: '#18181b', accent: '#f59e0b', glow: '#ef4444', badgeBg: '#d97706', codeSnippet: '01001001 01001110 01010100 01010010\n[FIREWALL ENFORCED: 256-BIT BITCODE]\nSTATUS: AUTHENTICATED & SECURE' },
     CLOUD_DEVOPS: { bg1: '#0c4a6e', bg2: '#0369a1', accent: '#06b6d4', glow: '#38bdf8', badgeBg: '#0284c7', codeSnippet: 'docker run -d -p 8080:8080 skillsphere/backend:latest\nkubectl scale deployment --replicas=5' },
     DESIGN: { bg1: '#4c1d95', bg2: '#1e1b4b', accent: '#a855f7', glow: '#f43f5e', badgeBg: '#7c3aed', codeSnippet: '/* UI Canvas System */\n:root {\n  --primary: #a855f7;\n  --radius: 16px;\n}' },
     THREE_D: { bg1: '#1e1b4b', bg2: '#0f172a', accent: '#6366f1', glow: '#ec4899', badgeBg: '#4f46e5', codeSnippet: 'const mesh = new THREE.Mesh(\n  new THREE.BoxGeometry(1, 1, 1),\n  new THREE.MeshStandardMaterial()\n);' },
-    GENERAL: { bg1: '#0f172a', bg2: '#1e293b', accent: '#10b981', glow: '#38bdf8', badgeBg: '#059669', codeSnippet: 'class SkillSphere {\n  constructor() { this.version = "2.0"; }\n}' }
+    GENERAL: { bg1: '#0f172a', bg2: '#1e293b', accent: '#10b981', glow: '#38bdf8', badgeBg: '#059669', codeSnippet: 'class Enterprise Learning Platform {\n  constructor() { this.version = "2.0"; }\n}' }
   };
 
   const themeKeys = ['JAVA', 'REACT_WEB', 'PYTHON_AI', 'CYBER_SECURITY'];

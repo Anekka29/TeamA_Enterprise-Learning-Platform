@@ -35,7 +35,7 @@ const DEFAULT_ROLE_NOTIFICATIONS = {
     },
     {
       id: 'noti_std_4',
-      title: 'Welcome to SkillSphere Nexus! 🚀',
+      title: 'Welcome to Enterprise Learning Platform with Skill and Career Guidance System! 🚀',
       message: 'Explore interactive courses, AI career roadmaps, DSA practice questions, and live mentor sessions.',
       createdAt: new Date(Date.now() - 1000 * 60 * 1440).toISOString(), // 1 day ago
       read: true,

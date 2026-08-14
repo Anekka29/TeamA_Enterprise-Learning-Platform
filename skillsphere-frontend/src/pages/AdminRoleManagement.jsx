@@ -181,7 +181,7 @@ export default function AdminRoleManagement() {
       {/* Navbar */}
       <nav className="admin-navbar">
         <a className="admin-navbar-brand" href="#">
-          <img src={logoImg} alt="SkillSphere Nexus" />
+          <img src={logoImg} alt="Enterprise Learning Platform with Skill and Career Guidance System" style={{ height: '38px', objectFit: 'contain' }} />
         </a>
         <div className="admin-nav-right">
           <Link to={ROUTES.ADMIN_DASHBOARD} className="admin-nav-link">
@@ -197,7 +197,7 @@ export default function AdminRoleManagement() {
         {/* Page header */}
         <div className="page-header">
           <h1><i className="bi bi-people-fill me-2"></i>User Role Management</h1>
-          <p>Manage user roles and permissions across the SkillSphere Nexus platform.</p>
+          <p>Manage user roles and permissions across the Enterprise Learning Platform with Skill and Career Guidance System.</p>
         </div>
 
         {/* Stats */}

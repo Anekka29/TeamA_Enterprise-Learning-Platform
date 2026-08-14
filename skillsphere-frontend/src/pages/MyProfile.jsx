@@ -281,7 +281,7 @@ export default function MyProfile() {
               <ProfileFieldDisplay label="Department" value={pd.department || 'Operations & Governance'} icon="bi-diagram-3-fill" />
             </div>
             <div className="col-md-6">
-              <ProfileFieldDisplay label="Organization" value={pd.organization || 'SkillSphere Enterprise'} icon="bi-building" />
+              <ProfileFieldDisplay label="Organization" value={pd.organization || 'Enterprise Learning Platform Enterprise'} icon="bi-building" />
             </div>
             <div className="col-md-6">
               <ProfileFieldDisplay label="Admin Identifier" value={pd.adminIdentifier || 'ADM-SYS-2026'} icon="bi-key-fill" />

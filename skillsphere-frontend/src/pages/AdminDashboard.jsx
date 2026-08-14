@@ -151,20 +151,25 @@ export default function AdminDashboard() {
             <div className="row g-4">
               <div className="col-lg-7">
                 <div className="card border-0 shadow-sm rounded-4 p-4 bg-white border h-100">
-                  <h5 className="fw-bold text-dark mb-3">Audit Logs</h5>
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h5 className="fw-bold text-dark mb-0">Audit Logs</h5>
+                    <a href="#audits" className="btn btn-link btn-sm p-0 text-decoration-none fw-semibold">View All</a>
+                  </div>
                   {auditLogs.length === 0 ? (
                     <div className="text-center py-5 text-muted">
-                      <i className="bi bi-shield-check fs-1 mb-3 text-success"></i>
-                      <p className="mb-0">No persisted audit log records are available in Phase 1.</p>
+                      <i className="bi bi-shield-check fs-1 mb-2 text-success d-block"></i>
+                      <p className="mb-0 small">No audit logs recorded yet.</p>
                     </div>
                   ) : (
-                    auditLogs.map((entry) => (
-                      <div key={`${entry.type}-${entry.timestamp}-${entry.title}`} className="p-3 bg-light rounded-4 border mb-2 small text-muted d-flex align-items-start gap-2">
+                    auditLogs.slice(0, 5).map((entry, index) => (
+                      <div key={entry.id || `audit-${index}`} className="p-3 bg-light rounded-4 border mb-2 small text-muted d-flex align-items-start gap-2">
                         <i className="bi bi-shield-check text-success mt-1"></i>
-                        <div>
-                          <div className="fw-semibold text-dark">{entry.title}</div>
-                          <div>{entry.description}</div>
-                          <div className="small mt-1">{entry.timestamp ? new Date(entry.timestamp).toLocaleString() : 'Recently'}</div>
+                        <div className="w-100">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <span className="fw-semibold text-dark">{entry.title || entry.type || 'Audit Action'}</span>
+                            <span className="extra-small text-muted">{entry.timestamp ? new Date(entry.timestamp).toLocaleString() : 'Recently'}</span>
+                          </div>
+                          <div className="small text-muted mt-1">{entry.description || entry.details || '—'}</div>
                         </div>
                       </div>
                     ))

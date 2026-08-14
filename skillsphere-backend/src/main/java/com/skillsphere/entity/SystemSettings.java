@@ -20,7 +20,7 @@ public class SystemSettings {
 
     @Column(nullable = false)
     @Builder.Default
-    private String platformName = "SkillSphere Nexus";
+    private String platformName = "Enterprise Learning Platform with Skill and Career Guidance System";
 
     @Column(nullable = false)
     @Builder.Default

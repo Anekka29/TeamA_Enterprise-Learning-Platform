@@ -277,7 +277,7 @@ export default function StudentCourseDetails() {
                         <h4 className="fw-bold text-dark mb-1">{course.instructor || course.mentorName || 'Certified Instructor'}</h4>
                         <div className="text-muted small mb-1">{instructorProfile.email || 'Mentor contact available after enrollment'}</div>
                         <div className="text-muted small">
-                          {[instructorProfile.department, instructorProfile.college].filter(Boolean).join(' • ') || 'SkillSphere certified mentor'}
+                          {[instructorProfile.department, instructorProfile.college].filter(Boolean).join(' • ') || 'Enterprise Learning Platform certified mentor'}
                         </div>
                       </div>
                     </div>
