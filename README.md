@@ -590,7 +590,7 @@ GitHub Repository:
 
 # 👩‍💻 Team Members
 
-Anekka T.S.
+Anekka T.S
 Chandni Singh
 B. Rajya Lakshmi
 G. S. Bharanidharan
