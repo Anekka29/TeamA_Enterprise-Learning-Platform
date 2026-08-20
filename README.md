@@ -1,4 +1,4 @@
-# 🎓 SkillSphere Nexus
+# 🎓 Enterprise Learning Platform
 
 > **Learn • Connect • Grow**
 
