@@ -586,7 +586,7 @@ TeamA_Enterprise-Learning-Platform
 
 GitHub Repository:
 
-[[https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd](https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd)]
+(https://github.com/Anekka29/TeamA_Enterprise-Learning-Platform.git)
 
 # 👩‍💻 Team Members
 Anekka T.S
