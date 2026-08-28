@@ -308,7 +308,7 @@ Postman
 Open a terminal and run:
 
 ```bash
-git clone https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd.git
+git clone https://github.com/Anekka29/TeamA_Enterprise-Learning-Platform.git
 ```
 
 Then move into the project directory:
@@ -582,14 +582,13 @@ Version Control using Git & GitHub
 
 Repository Name:
 
-TeamA_SkillSphere-learning-nexus-fsd
+TeamA_Enterprise-Learning-Platform
 
 GitHub Repository:
 
-[https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd](https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd)
+[[https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd](https://github.com/Anekka29/TeamA_SkillSphere-learning-nexus-fsd)]
 
 # 👩‍💻 Team Members
-
 Anekka T.S
 Chandni Singh
 B. Rajya Lakshmi
