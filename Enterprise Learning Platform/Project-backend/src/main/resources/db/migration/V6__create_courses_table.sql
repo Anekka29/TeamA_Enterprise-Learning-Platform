@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS courses (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    short_description TEXT,
+    category VARCHAR(255) NOT NULL,
+    level VARCHAR(255) NOT NULL,
+    thumbnail_url VARCHAR(500),
+    mentor_id BIGINT NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    rejection_reason TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (mentor_id) REFERENCES users(id) ON DELETE CASCADE
+);

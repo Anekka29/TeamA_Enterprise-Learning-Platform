@@ -1,0 +1,5 @@
+package com.springboot.restapi.controller;
+
+public class HelloControllerClass {
+
+}

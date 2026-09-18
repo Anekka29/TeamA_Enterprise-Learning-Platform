@@ -1,0 +1,22 @@
+# Node / Frontend dependencies & build
+node_modules/
+dist/
+.env
+.env.local
+Project Frontend/node_modules/
+Project Frontend/dist/
+Project Frontend/.env
+Project Frontend/.env.local
+
+# Java / Maven build & uploads
+target/
+uploads/
+Project Backend/target/
+Project Backend/uploads/
+
+# IDE & OS files
+.idea/
+.vscode/
+*.log
+mvn-*.log
+.DS_Store
